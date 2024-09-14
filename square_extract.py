@@ -83,21 +83,28 @@ def get_all_payments(location_id):
     return payments
 
 # Retrieve all payments
-payments = get_all_payments(location_id)
-payments_df = pd.DataFrame(payments)
-payments_df = payments_df[['id','created_at','order_id']]
-payments_df['created_at'] = payments_df['created_at'].apply(convert_datetime)
-orders = []
-for payment in payments:
-    # breakpoint()
-    temp_order = fetch_order(payment.get('order_id'))
-    if temp_order:
-        orders.extend(temp_order)
-orders_df = pd.DataFrame(orders)
-orders_df['base_price_money']=orders_df['base_price_money'].apply(lambda x: x['amount']/100)
-orders_df['total_money']=orders_df['total_money'].apply(lambda x: x['amount']/100)
-orders_df = orders_df[['order_id','name','variation_name','quantity','base_price_money','total_money']]
-# payments_df['amount_money']=payments_df['amount_money'].apply(lambda x: x['amount']/100)
-all_orders_df = pd.merge(payments_df,orders_df,on='order_id',how='left')
-# 
-all_orders_df.to_csv('data/square_payments.csv')
+
+def main():
+    payments = get_all_payments(location_id)
+    payments_df = pd.DataFrame(payments)
+    payments_df = payments_df[['id','created_at','order_id']]
+    payments_df['datetime'] = payments_df['created_at'].apply(convert_datetime)
+    payments_df.drop(columns=['created_at'],inplace=True)
+    orders = []
+    for payment in payments:
+        # breakpoint()
+        temp_order = fetch_order(payment.get('order_id'))
+        if temp_order:
+            orders.extend(temp_order)
+    orders_df = pd.DataFrame(orders)
+    orders_df['base']=orders_df['base_price_money'].apply(lambda x: x['amount']/100)
+    orders_df['total']=orders_df['total_money'].apply(lambda x: x['amount']/100)
+    orders_df['type']='Physical'
+    orders_df = orders_df[['order_id','name','variation_name','quantity','base','total','type']]
+    # payments_df['amount_money']=payments_df['amount_money'].apply(lambda x: x['amount']/100)
+    all_orders_df = pd.merge(payments_df,orders_df,on='order_id',how='left')
+    all_orders_df.drop(columns=['order_id','id'])
+    all_orders_df.to_csv('ProcessedData/square_payments.csv',index=False)
+
+if __name__ == '__main__':
+    main(False)
