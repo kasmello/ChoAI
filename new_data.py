@@ -1,4 +1,5 @@
 import json
+import pandas as pd
 
 machine_over_time = """
 sales_data = df.groupby('Date')['total'].sum().reset_index()
@@ -79,7 +80,7 @@ monthly_sales.columns = ['Month','Total Albums']
 monthly_sales
 """
 
-dataa = [
+data = [
 {
     "instruction": "show me machine sales over time",
     "output": machine_over_time
@@ -106,4 +107,4 @@ dataa = [
 
 
 with open('ProcessedData/data.json', 'w') as json_file:
-    json.dump(dataa, json_file, indent=4) 
+    json.dump(data, json_file, indent=4) 
