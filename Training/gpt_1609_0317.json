@@ -1,0 +1,30 @@
+[
+    {
+        "instruction": "show me total sales by product for August",
+        "output": "august_sales = df[(df['action_time'] >= '2024-08-01') & (df['action_time'] <= '2024-08-31')]\naugust_product_sales = august_sales.groupby('product')['total'].sum().reset_index()\nfig, ax = plt.subplots()\nax.bar(august_product_sales['product'], august_product_sales['total'], color=medium)\nax.set_xlabel('Product', font_properties=manjari_bold)\nax.set_ylabel('Total Sales', font_properties=manjari_bold)\nplt.xticks(rotation=45)\nax.set_title('Total Sales by Product for August', font_properties=manjari_bold)\nplt.show()"
+    },
+    {
+        "instruction": "give me a table of total quantities sold by machine type in July",
+        "output": "july_sales = df[(df['action_time'] >= '2024-07-01') & (df['action_time'] <= '2024-07-31')]\nmachine_sales_july = july_sales.groupby('product')['quantity'].sum().reset_index()\nmachine_sales_july.columns = ['Product', 'Total Quantities Sold']\nmachine_sales_july"
+    },
+    {
+        "instruction": "show me the distribution of sales per product as a pie chart",
+        "output": "product_sales = df.groupby('product')['total'].sum().reset_index()\nfig, ax = plt.subplots()\nax.pie(product_sales['total'], labels=product_sales['product'], autopct='%1.1f%%', startangle=90)\nax.set_title('Sales Distribution by Product', font_properties=manjari_bold)\nplt.show()"
+    },
+    {
+        "instruction": "show me total photo sales over time",
+        "output": "photo_sales = df[df['type'] == 'Photo'].groupby('Date')['total'].sum().reset_index()\nfig, ax = plt.subplots()\nax.plot(photo_sales['Date'], photo_sales['total'], color=medium)\nax.set_xlabel('Date', font_properties=manjari_bold)\nax.set_ylabel('Total Photo Sales', font_properties=manjari_bold)\nplt.xticks(rotation=90)\nax.set_title('Total Photo Sales Over Time', font_properties=manjari_bold)\nplt.show()"
+    },
+    {
+        "instruction": "show me the total sales per employee in a bar chart",
+        "output": "employee_sales = df.groupby('staff')['total'].sum().reset_index()\nfig, ax = plt.subplots()\nax.bar(employee_sales['staff'], employee_sales['total'], color=medium)\nax.set_xlabel('Employee', font_properties=manjari_bold)\nax.set_ylabel('Total Sales', font_properties=manjari_bold)\nplt.xticks(rotation=45)\nax.set_title('Total Sales by Employee', font_properties=manjari_bold)\nplt.show()"
+    },
+    {
+        "instruction": "give me a table of total albums sold by employee",
+        "output": "album_sales = df[df['type'] == 'Photo'].groupby('staff')['quantity'].sum().reset_index()\nalbum_sales.columns = ['Employee', 'Total Albums Sold']\nalbum_sales"
+    },
+    {
+        "instruction": "show me the machine sales per day for July",
+        "output": "july_sales = df[(df['action_time'] >= '2024-07-01') & (df['action_time'] <= '2024-07-31')]\nmachine_sales_july = july_sales.groupby('Date')['total'].sum().reset_index()\nfig, ax = plt.subplots()\nax.plot(machine_sales_july['Date'], machine_sales_july['total'], color=medium)\nax.set_xlabel('Date', font_properties=manjari_bold)\nax.set_ylabel('Total Sales', font_properties=manjari_bold)\nplt.xticks(rotation=90)\nax.set_title('Machine Sales per Day for July', font_properties=manjari_bold)\nplt.show()"
+    }
+]

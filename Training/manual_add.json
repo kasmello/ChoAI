@@ -1,0 +1,30 @@
+[
+    {
+        "instruction": "show me machine sales over time",
+        "output": "sales_data = df.groupby('Date')['total'].sum().reset_index()\nfig, ax = plt.subplots()\nax.plot(sales_data['Date'], sales_data['total'], color=dark, linewidth=2)\nax.set_xlabel('Date', color=dark, font_properties=manjari_bold)\nax.set_ylabel('Total Sales', color=dark, font_properties=manjari_bold)\nplt.xticks(rotation=90)\nax.xaxis.set_major_locator(mdates.WeekdayLocator(interval=1))\nax.set_title('Machine Sales Over Time', color=dark, font_properties=manjari_bold)\nax.tick_params(colors=dark)\nfor label in ax.get_xticklabels() + ax.get_yticklabels():\n    label.set_fontproperties(manjari_regular)\nlogo_ax = fig.add_axes([0.8, 0.85, 0.15, 0.15], anchor='NE', zorder=1)\nlogo_ax.imshow(logo_img)\nlogo_ax.axis('off') \nplt.show()"
+    },
+    {
+        "instruction": "give me sales results based off employee as a bar graph",
+        "output": "staff_data = df.groupby('staff')['total'].sum().reset_index()\nfig, ax = plt.subplots()\nax.bar(staff_data['staff'], staff_data['total'], color=medium, linewidth=2)\nax.set_xlabel('Staff', color=dark, font_properties=manjari_bold)\nax.set_ylabel('Total Sales', color=dark, font_properties=manjari_bold)\nplt.xticks(rotation=90)\nax.set_title('Machine Sales per Employee', color=dark, font_properties=manjari_bold)\nax.tick_params(colors=dark)\nfor label in ax.get_xticklabels() + ax.get_yticklabels():\n    label.set_fontproperties(manjari_regular)\nlogo_ax = fig.add_axes([0.8, 0.85, 0.15, 0.15], anchor='NE', zorder=1)\nlogo_ax.imshow(logo_img)\nlogo_ax.axis('off') \nplt.show()"
+    },
+    {
+        "instruction": "give me a table of total albumns sold per month",
+        "output": "albumn_data = df[(df['type']=='Physical') & (df['product'])]\nalbumn_data['action_time'] = pd.to_datetime(df['action_time'], errors='coerce')\nmonthly_sales = albumn_data.groupby(pd.Grouper(key='action_time', freq='M'))['quantity'].sum().reset_index()\nmonthly_sales.columns = ['Month','Total Albums']\nmonthly_sales"
+    },
+    {
+        "instruction": "give me machine sales over time for july?",
+        "output": "sales_data = df[(df['action_time']>='2024-07-01') & (df['action_time']<='2024-07-31')].groupby('Date')['total'].sum().reset_index()\nfig, ax = plt.subplots()\nax.plot(sales_data['Date'], sales_data['total'], color=dark, linewidth=2)\nax.set_xlabel('Date', color=dark, font_properties=manjari_bold)\nax.set_ylabel('Total Sales', color=dark, font_properties=manjari_bold)\nplt.xticks(rotation=90)\nax.xaxis.set_major_locator(mdates.WeekdayLocator(interval=1))\nax.set_title('Machine Sales Over Time', color=dark, font_properties=manjari_bold)\nax.tick_params(colors=dark)\nfor label in ax.get_xticklabels() + ax.get_yticklabels():\n    label.set_fontproperties(manjari_regular)\nlogo_ax = fig.add_axes([0.8, 0.85, 0.15, 0.15], anchor='NE', zorder=1)\nlogo_ax.imshow(logo_img)\nlogo_ax.axis('off') \nplt.show()"
+    },
+    {
+        "instruction": "Can I have machine sales over time for august?",
+        "output": "sales_data = df[(df['action_time']>='2024-08-01') & (df['action_time']<='2024-08-31')].groupby('Date')['total'].sum().reset_index()\nfig, ax = plt.subplots()\nax.plot(sales_data['Date'], sales_data['total'], color=dark, linewidth=2)\nax.set_xlabel('Date', color=dark, font_properties=manjari_bold)\nax.set_ylabel('Total Sales', color=dark, font_properties=manjari_bold)\nplt.xticks(rotation=90)\nax.xaxis.set_major_locator(mdates.WeekdayLocator(interval=1))\nax.set_title('Machine Sales Over Time', color=dark, font_properties=manjari_bold)\nax.tick_params(colors=dark)\nfor label in ax.get_xticklabels() + ax.get_yticklabels():\n    label.set_fontproperties(manjari_regular)\nlogo_ax = fig.add_axes([0.8, 0.85, 0.15, 0.15], anchor='NE', zorder=1)\nlogo_ax.imshow(logo_img)\nlogo_ax.axis('off') \nplt.show()"
+    },
+    {
+        "instruction": "Hi, can you show me in a table the number of times employees needed to be replaced on a shift",
+        "output": "staff_replacement_days = df.groupby('replaced')['Date'].nunique().reset_index(name='Days')\nstaff_replacement_days = staff_replacement_days.dropna()\nall_staff = df['staff'].unique()\nall_staff_df = pd.DataFrame(all_staff, columns=['staff'])\nstaff_replacement_days_complete = all_staff_df.merge(staff_replacement_days, left_on='staff', right_on='replaced', how='left')\nstaff_replacement_days_complete['Days'] = staff_replacement_days_complete['Days'].fillna(0)\nstaff_replacement_days_complete = staff_replacement_days_complete.drop(columns=['replaced'])\nstaff_replacement_days_complete.sort_values(by='Days',ascending=False)"
+    },
+    {
+        "instruction": "Show how many employees needed to be replaced on a shift",
+        "output": "staff_replacement_days = df.groupby('replaced')['Date'].nunique().reset_index(name='Days')\nstaff_replacement_days = staff_replacement_days.dropna()\nall_staff = df['staff'].unique()\nall_staff_df = pd.DataFrame(all_staff, columns=['staff'])\nstaff_replacement_days_complete = all_staff_df.merge(staff_replacement_days, left_on='staff', right_on='replaced', how='left')\nstaff_replacement_days_complete['Days'] = staff_replacement_days_complete['Days'].fillna(0)\nstaff_replacement_days_complete = staff_replacement_days_complete.drop(columns=['replaced'])\nstaff_replacement_days_complete = staff_replacement_days_complete.sort_values(by='Days', ascending=False)\n\nfig, ax = plt.subplots()\nax.bar(staff_replacement_days_complete['staff'], staff_replacement_days_complete['Days'], color=medium)\nax.set_xlabel('Staff', color=dark, font_properties=manjari_bold)\nax.set_ylabel('Days', color=dark, font_properties=manjari_bold)\nplt.xticks(rotation=45)\nax.set_title('Count of Shifts that Needed Replacing', color=dark, font_properties=manjari_bold)\nax.tick_params(colors=dark)\nfor label in ax.get_xticklabels() + ax.get_yticklabels():\n    label.set_fontproperties(manjari_regular)\nlogo_ax = fig.add_axes([0.8, 0.85, 0.15, 0.15], anchor='NE', zorder=1)\nlogo_ax.imshow(logo_img)\nlogo_ax.axis('off') \nplt.show()"
+    }
+]
