@@ -3,7 +3,7 @@ import sqlite3
 import square_extract, roster, machine_payments
 
 def main():
-    square_extract.main()
+    square_extract.main(mask=False)
     roster.main(mask=False)
     machine_payments.main()
 
@@ -50,6 +50,8 @@ def main():
     tt = pd.read_sql_query(qry,conn)
     tt.to_csv('ProcessedData/Joined_DF.csv',index=False)
     print(tt)
+
+main()
 
 
 

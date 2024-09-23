@@ -37,6 +37,47 @@ client = Client(
 )
 orders_api = client.orders
 
+def get_artist(album_name):
+    if not isinstance(album_name, str):
+        return 'Unknown'
+    if 'STRAY KIDS' in album_name.upper():
+        return 'Stray Kids'
+    elif 'TWICE' in album_name.upper():
+        return 'Twice'
+    elif 'NCT' in album_name.upper():
+        return 'NCT Dream'
+    elif 'SEVENTEEN' in album_name.upper():
+        return 'Seventeen'
+    elif 'JIMIN' in album_name.upper():
+        return 'BTS Jimin'
+    elif 'JUNGKOOK' in album_name.upper():
+        return 'BTS JungKook'
+    elif '(G)I-DLE' in album_name.upper():
+        return '(G)I-DLE'
+    elif 'BTS V' in album_name.upper():
+        return 'BTS V'
+    elif 'EXO' in album_name.upper():
+        return 'EXO'
+    elif 'ATEEZ' in album_name.upper():
+        return 'ATEEZ'
+    elif 'AESPA' in album_name.upper():
+        return 'AESPA'
+    elif 'ENHYPEN' in album_name.upper():
+        return 'ENHYPEN'
+    elif 'ITZY' in album_name.upper():
+        return 'ITZY'
+    elif 'ENHYPEN' in album_name.upper():
+        return 'ENHYPEN'
+    elif 'NAYEON' in album_name.upper():
+        return 'NAYEON'
+    elif 'NEWJEANS' in album_name.upper():
+        return 'New Jeans'
+    elif 'LE SSERAFIM' in album_name.upper():
+        return 'Le Sserafim'
+    elif 'BTS' in album_name.upper():
+        return 'BTS'
+    return 'Unknown'
+
 def fetch_order(order_id):
     try:
         result = orders_api.retrieve_order(order_id)
@@ -84,7 +125,7 @@ def get_all_payments(location_id):
 
 # Retrieve all payments
 
-def main():
+def main(mask):
     payments = get_all_payments(location_id)
     payments_df = pd.DataFrame(payments)
     payments_df = payments_df[['id','created_at','order_id']]
@@ -99,7 +140,7 @@ def main():
     orders_df = pd.DataFrame(orders)
     orders_df['base']=orders_df['base_price_money'].apply(lambda x: x['amount']/100)
     orders_df['total']=orders_df['total_money'].apply(lambda x: x['amount']/100)
-    orders_df['type']='Physical'
+    orders_df['type']=orders_df['name'].apply(get_artist)
     orders_df = orders_df[['order_id','name','variation_name','quantity','base','total','type']]
     # payments_df['amount_money']=payments_df['amount_money'].apply(lambda x: x['amount']/100)
     all_orders_df = pd.merge(payments_df,orders_df,on='order_id',how='left')
