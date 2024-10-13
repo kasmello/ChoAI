@@ -9,7 +9,6 @@ from square.http.auth.o_auth_2 import BearerAuthCredentials
 # Replace with your actual access token
 load_dotenv()
 access_token = os.getenv('SQUARE_ACCESS_TOKEN')
-print(access_token)
 start_date = "2024-06-10T00:00:00Z"  # ISO 8601 format
 # Get the current date and time
 current_time = datetime.utcnow()
@@ -76,6 +75,15 @@ def get_artist(album_name):
         return 'Le Sserafim'
     elif 'BTS' in album_name.upper():
         return 'BTS'
+    elif 'IU' in album_name:
+        return 'IU'
+    elif 'ZEROBASEONE' in album_name:
+        return 'ZEROBASEONE'
+    elif 'ZEROBATomorrow X TogetherSEONE' in album_name.upper() or 'TXT' in album_name:
+        return 'Tomorrow X Together'
+    elif album_name != '':
+        return 'Miscellaneous'
+
     return 'Unknown'
 
 def fetch_order(order_id):
@@ -125,7 +133,7 @@ def get_all_payments(location_id):
 
 # Retrieve all payments
 
-def main(mask):
+def main(output='ProcessedData/square_payments.csv'):
     payments = get_all_payments(location_id)
     payments_df = pd.DataFrame(payments)
     payments_df = payments_df[['id','created_at','order_id']]
