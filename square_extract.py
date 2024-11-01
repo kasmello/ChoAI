@@ -149,10 +149,10 @@ def main(output='ProcessedData/square_payments.csv'):
     orders_df['base']=orders_df['base_price_money'].apply(lambda x: x['amount']/100)
     orders_df['total']=orders_df['total_money'].apply(lambda x: x['amount']/100)
     orders_df['type']=orders_df['name'].apply(get_artist)
-    orders_df = orders_df[['order_id','name','variation_name','quantity','base','total','type']]
+    orders_df['category'] = orders_df['type'].apply(lambda x: 'Miscellaneous' if x == 'Miscellaneous' else x)
+    orders_df = orders_df[['order_id','name','variation_name','quantity','base','total','type','category']]
     # payments_df['amount_money']=payments_df['amount_money'].apply(lambda x: x['amount']/100)
     all_orders_df = pd.merge(payments_df,orders_df,on='order_id',how='left')
-    all_orders_df.drop(columns=['order_id','id'])
     all_orders_df.to_csv('ProcessedData/square_payments.csv',index=False)
 
 if __name__ == '__main__':

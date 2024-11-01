@@ -3,15 +3,21 @@ import ast
 import astor
 import pandas as pd
 import json
+import random
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import matplotlib.font_manager as fm
 import matplotlib.image as mpimg
 from datetime import datetime
 
-df = pd.read_csv('processeddata/joined_df_0.csv')
-df['action_time'] = pd.to_datetime(df['action_time'])
-df['Date']=pd.to_datetime(df['Date'])
+def load_df(path):
+    df = pd.read_csv(path)
+    df['action_time'] = pd.to_datetime(df['action_time'])
+    df['Date']=pd.to_datetime(df['Date'])
+    return df
+
+
+
 
 manjari_bold_path = 'font/Manjari-Bold.ttf'
 manjari_regular_path = 'font/Manjari-Regular.ttf'
@@ -28,6 +34,10 @@ logo_img = mpimg.imread('Media/horizontal-logo.png')
 manjari_bold = fm.FontProperties(fname=manjari_bold_path)
 manjari_regular = fm.FontProperties(fname=manjari_regular_path)
 manjari_thin = fm.FontProperties(fname=manjari_thin_path)
+
+with open('ProcessedData/df_column_desc.txt','r') as file:
+    df_columns_list = json.load(file)
+
 
 mat_plot_lib_all_plots = [
     'plot',             # Line plot
@@ -129,8 +139,32 @@ def additional_code_rewrites(code):
     """
 
 
-#scramble titles and axes label
+def scramble_matplotlib_code(code_string):
+    # Split the code into lines
+    code_lines = code_string.strip().split('\n')
+    
+    # Extract lines that contain certain matplotlib functions
+    plot_commands = [line for line in code_lines if "plt.plot" in line]
+    label_commands = [line for line in code_lines if any(func in line for func in ["plt.title", "plt.xlabel", "plt.ylabel", 'ax.set_title','ax.set_xlabel','ax.set_ylabel'])]
+    grid_or_legend_commands = [line for line in code_lines if "plt.grid" in line or "plt.legend" in line]
+    
+    # Shuffle the order of these components
+    random.shuffle(plot_commands)
+    random.shuffle(label_commands)
+    random.shuffle(grid_or_legend_commands)
+    
+    # Combine the scrambled parts back into the code
+    scrambled_code = "\n".join(plot_commands + label_commands + grid_or_legend_commands)
+    
+    # Add plt.show() if it is not in the original code
+    if "plt.show()" not in code_string:
+        scrambled_code += "\nplt.show()"
+    
+    return scrambled_code
 
+
+
+#scramble titles and axes label
 new_file_name = 'Training/final_file.json'
 if __name__=='__main__':
     with open('Training/manual_add.json', 'r') as json_file:

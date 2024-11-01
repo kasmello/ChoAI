@@ -1,7 +1,7 @@
 import pandas as pd
 
 def get_type(row):
-    return 'Copy/Print' if round(row['base'])==5 else 'Photo'
+    return 'Copy' if round(row['base'])==5 else 'Photo'
 # Read the Excel file
 def main(input='RawData/machine_order_list.xlsx',output='ProcessedData/machine_order_list.csv'):
     df = pd.read_excel(input)
@@ -17,3 +17,6 @@ def main(input='RawData/machine_order_list.xlsx',output='ProcessedData/machine_o
     df_filtered['datetime'] = pd.to_datetime(df_filtered['datetime'], format='%Y-%m-%d %H:%M:%S')
     # Display the result
     df_filtered.to_csv(output,index=False)
+
+if __name__ == '__main__':
+    main()

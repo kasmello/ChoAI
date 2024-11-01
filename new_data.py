@@ -1,6 +1,7 @@
 import json
 import csv
 import random
+import code_scrambler
 import pandas as pd
 
 
@@ -18,49 +19,31 @@ def turn_df_into_input(data_file):
     training_data = '\n'.join(combined_data)
     return training_data
 
-data_0_file = 'ProcessedData/Joined_DF_0.csv'
-data_0_str = turn_df_into_input(data_0_file)
+data_file = 'ProcessedData/Joined_DF.csv'
+data_str = turn_df_into_input(data_file)
 
-def scramble_matplotlib_code(code_string):
-    # Split the code into lines
-    code_lines = code_string.strip().split('\n')
-    
-    # Extract lines that contain certain matplotlib functions
-    plot_commands = [line for line in code_lines if "plt.plot" in line]
-    label_commands = [line for line in code_lines if any(func in line for func in ["plt.title", "plt.xlabel", "plt.ylabel", 'ax.set_title','ax.set_xlabel','ax.set_ylabel'])]
-    grid_or_legend_commands = [line for line in code_lines if "plt.grid" in line or "plt.legend" in line]
-    
-    # Shuffle the order of these components
-    random.shuffle(plot_commands)
-    random.shuffle(label_commands)
-    random.shuffle(grid_or_legend_commands)
-    
-    # Combine the scrambled parts back into the code
-    scrambled_code = "\n".join(plot_commands + label_commands + grid_or_legend_commands)
-    
-    # Add plt.show() if it is not in the original code
-    if "plt.show()" not in code_string:
-        scrambled_code += "\nplt.show()"
-    
-    return scrambled_code
+
 
 # def replace_database
 
 
 #things to modulate:
-#colour
-#date
+#colour #COLOUR#
+#date 
 #title
 #axis
 #coding format
+#columns/names
 
 #steps:
 #provide base format
 #replace date, colour, title, axis with tags #DATE#, #COLOUR#, #TITLE#, #AXIS#
 #replace appropriate columns with tags 
 #scramble code after tags replaced
-#change coding format
+#change coding format DONE
 
+
+#what we need data of
 
 
 machine_over_time = """sales_data = df.groupby('Date')['total'].sum().reset_index()
@@ -83,7 +66,7 @@ logo_ax.imshow(logo_img)
 logo_ax.axis('off') 
 plt.show(block=False)"""
 
-machine_over_time_july = """sales_data = df[(df['action_time']>='2024-07-01') & (df['action_time']<='2024-07-31')].groupby('Date')['total'].sum().reset_index()
+machine_over_time_july = """sales_data = df[(df[#ACTION#]>='2024-07-01') & (df[#ACTION#]<='2024-07-31')].groupby('Date')['total'].sum().reset_index()
 fig, ax = plt.subplots()
 ax.bar(sales_data['Date'], sales_data['total'], color=medium)
 ax.set_xlabel('Date', color=dark, font_properties=manjari_bold)
@@ -100,9 +83,9 @@ for label in ax.get_xticklabels() + ax.get_yticklabels():
 logo_ax = fig.add_axes([0.8, 0.85, 0.15, 0.15], anchor='NE', zorder=1)
 logo_ax.imshow(logo_img)
 logo_ax.axis('off') 
-plt.show(block=False))"""
+plt.show(block=False)"""
 
-machine_over_time_august = """sales_data = df[(df['action_time']>='2024-08-01') & (df['action_time']<='2024-08-31')].groupby('Date')['total'].sum().reset_index()
+machine_over_time_august = """sales_data = df[(df[#ACTION#]>='2024-08-01') & (df[#ACTION#]<='2024-08-31')].groupby('Date')['total'].sum().reset_index()
 fig, ax = plt.subplots()
 ax.bar(sales_data['Date'], sales_data['total'], color=medium)
 ax.set_xlabel('Date', color=dark, font_properties=manjari_bold)
@@ -121,9 +104,9 @@ logo_ax.imshow(logo_img)
 logo_ax.axis('off') 
 plt.show(block=False)"""
 
-by_people = """staff_data = df.groupby('staff')['total'].sum().reset_index()
+by_people = """staff_data = df.groupby(#STAFF#)['total'].sum().reset_index()
 fig, ax = plt.subplots()
-ax.bar(staff_data['staff'], staff_data['total'], color=medium)
+ax.bar(staff_data[#STAFF#], staff_data['total'], color=medium)
 ax.set_xlabel('Staff', color=dark, font_properties=manjari_bold)
 ax.set_ylabel('Total Sales ($)', color=dark, font_properties=manjari_bold)
 ax.tick_params(axis='x', labelrotation=45)
@@ -138,8 +121,140 @@ logo_ax.imshow(logo_img)
 logo_ax.axis('off') 
 plt.show(block=False)"""
 
+peak_hours_quantity = """df['hour'] = df[#ACTION#].dt.hour
+peak_hours = df.groupby('hour')[#QUANTITY#].sum().reset_index()
+fig, ax = plt.subplots()
+ax.bar(peak_hours['hour'], peak_hours[#QUANTITY#], color=medium)
+ax.set_xlabel('Hour', color=dark, font_properties=manjari_bold)
+ax.set_ylabel('Quantity', color=dark, font_properties=manjari_bold)
+ax.tick_params(axis='x', labelrotation=45)
+for tick in ax.get_xticklabels():
+    tick.set_ha('right')
+ax.set_title('Quantity of Sales at each hour', color=dark, font_properties=manjari_bold)
+ax.tick_params(colors=dark)
+for label in ax.get_xticklabels() + ax.get_yticklabels():
+    label.set_fontproperties(manjari_regular)
+logo_ax = fig.add_axes([0.8, 0.85, 0.15, 0.15], anchor='NE', zorder=1)
+logo_ax.imshow(logo_img)
+logo_ax.axis('off') 
+plt.show(block=False)"""
+
+peak_hours_total = """df['hour'] = df[#ACTION#].dt.hour
+peak_hours = df.groupby('hour')['total'].sum().reset_index()
+fig, ax = plt.subplots()
+ax.bar(peak_hours['hour'], peak_hours['total'], color=medium)
+ax.set_xlabel('Hour', color=dark, font_properties=manjari_bold)
+ax.set_ylabel('Total', color=dark, font_properties=manjari_bold)
+ax.tick_params(axis='x', labelrotation=45)
+for tick in ax.get_xticklabels():
+    tick.set_ha('right')
+ax.set_title('Total Sales at each hour', color=dark, font_properties=manjari_bold)
+ax.tick_params(colors=dark)
+for label in ax.get_xticklabels() + ax.get_yticklabels():
+    label.set_fontproperties(manjari_regular)
+logo_ax = fig.add_axes([0.8, 0.85, 0.15, 0.15], anchor='NE', zorder=1)
+logo_ax.imshow(logo_img)
+logo_ax.axis('off') 
+plt.show(block=False)"""
+
+total_0_sale_transactions_over_time = """zero_total = df[df['total']==0]
+zero_sale_summary = zero_total.groupby('Date')['total'].count().reset_index()
+zero_sale_summary.columns = ['Date','Total']
+fig, ax = plt.subplots()
+ax.plot(zero_sale_summary['Date'], zero_sale_summary['Total'], color=dark, linewidth=2)
+ax.set_xlabel('Date', color=dark, font_properties=manjari_bold)
+ax.set_ylabel('Total Transactions', color=dark, font_properties=manjari_bold)
+ax.tick_params(axis='x', labelrotation=45)
+for tick in ax.get_xticklabels():
+    tick.set_ha('right')
+ax.set_title('Total of Sales with $0 over time', color=dark, font_properties=manjari_bold)
+ax.set_xlim(df['Date'].min() - pd.Timedelta(days=3), df['Date'].max() + pd.Timedelta(days=3))
+ax.xaxis.set_major_formatter(mdates.DateFormatter('%d/%m/%Y')) 
+ax.tick_params(colors=dark)
+for label in ax.get_xticklabels() + ax.get_yticklabels():
+    label.set_fontproperties(manjari_regular)
+logo_ax = fig.add_axes([0.8, 0.85, 0.15, 0.15], anchor='NE', zorder=1)
+logo_ax.imshow(logo_img)
+logo_ax.axis('off') 
+plt.show(block=False)"""
+
+photo_vs_copy = """photos_vs_copies = df[df['product'].isin(['Blue Machine','Purple Machine'])]
+photos_vs_copies['next_purchase'] = photos_vs_copies.groupby('product')['type'].shift(-1)
+photos_vs_copies.loc[(photos_vs_copies['type'] == 'Photo') & (photos_vs_copies['next_purchase'] == 'Photo'), 'purchase_category'] = 'Only Photo'
+photos_vs_copies.loc[(photos_vs_copies['type'] == 'Photo') & (photos_vs_copies['next_purchase'] == 'Copy/Print'), 'purchase_category'] = 'Copy'
+photos_vs_copies_summary = photos_vs_copies.groupby('purchase_category').size().reset_index(name='count')
+photos_vs_copies_summary.columns=['Purchase Category','Count']
+fix, ax = plt.subplots()
+ax.bar(photos_vs_copies_summary['Purchase Category'], photos_vs_copies_summary['Count'], color=light)
+ax.set_xlabel('Purchase Category', color=dark, font_properties=manjari_bold)
+ax.set_ylabel('Count', color=dark, font_properties=manjari_bold)
+ax.tick_params(axis='x', labelrotation=45)
+for tick in ax.get_xticklabels():
+    tick.set_ha('right')
+ax.set_title('Do Customers Only Buy Photos?', color=dark, font_properties=manjari_bold)
+ax.tick_params(colors=dark)
+for label in ax.get_xticklabels() + ax.get_yticklabels():
+    label.set_fontproperties(manjari_regular)
+logo_ax = fig.add_axes([0.8, 0.85, 0.15, 0.15], anchor='NE', zorder=1)
+logo_ax.imshow(logo_img)
+logo_ax.axis('off') 
+plt.show(block=False)"""
+
+weekend_vs_weekday_table = """df['day_type'] = df['Date'].dt.dayofweek.apply(lambda x: 'Weekend' if x >= 5 else 'Weekday')
+total_sales_per_type = df.groupby('day_type')['total'].sum().reset_index()
+total_sales_per_type.columns = ['Day Type', 'Total Sales']
+total_sales_per_type['Total Sales'] = total_sales_per_type['Total Sales'].apply(lambda x: f'${x:,.2f}')
+
+fig, ax = plt.subplots(figsize=(8, 1))
+ax.axis('off')
+ax.axis('tight')
+table = ax.table(
+    cellText=total_sales_per_type.values, 
+    colLabels=total_sales_per_type.columns, 
+    cellLoc='center'
+)
+logo_ax = fig.add_axes([0.8, 0.85, 0.15, 0.15], anchor='NE', zorder=1)
+logo_ax.imshow(logo_img)
+logo_ax.axis('off') 
+
+table.auto_set_font_size(False)
+table.set_fontsize(14)
+table.scale(1.2, 4)
+
+for (i, j), cell in table.get_celld().items():
+    if i == 0:  
+        cell.set_text_props(weight='bold', color='white',font=manjari_bold)
+        cell.set_facecolor(dark) 
+    else:
+        cell.set_text_props(weight='bold', color='black',font=manjari_bold)
+        cell.set_facecolor(medium) if i % 2 == 0 else cell.set_facecolor(light)
+
+ax.set_title('Total Sales: Weekdays vs Weekends', fontsize=20, weight='bold', font_properties=manjari_bold)
+plt.tight_layout()
+plt.show(block=False)"""
+
+weekend_vs_weekday = """df['day_type'] = df['Date'].dt.dayofweek.apply(lambda x: 'Weekend' if x >= 5 else 'Weekday')
+total_sales_per_type = df.groupby('day_type')['total'].sum().reset_index()
+total_sales_per_type.columns = ['Day Type', 'Total Sales']
+fig, ax = plt.subplots(figsize=(8, 6))
+ax.bar(total_sales_per_type['Day Type'], total_sales_per_type['Total Sales'], color=medium)
+ax.set_xlabel('Day Type', color=dark, font_properties=manjari_bold)
+ax.set_ylabel('Total Sales ($)', color=dark, font_properties=manjari_bold)
+ax.tick_params(axis='x', labelrotation=45)
+for tick in ax.get_xticklabels():
+    tick.set_ha('right')
+ax.set_title('Total Sales: Weekdays vs Weekends', color=dark, font_properties=manjari_bold)
+ax.tick_params(colors=dark)
+for label in ax.get_xticklabels() + ax.get_yticklabels():
+    label.set_fontproperties(manjari_regular)
+logo_ax = fig.add_axes([0.8, 0.85, 0.15, 0.15], anchor='NE', zorder=1)
+logo_ax.imshow(logo_img)
+logo_ax.axis('off') 
+plt.show(block=False)"""
+
+
 table_albums_month = """albumn_data = df[~df['type'].isin(['Photo','Unknown'])]
-monthly_sales = albumn_data.groupby(pd.Grouper(key='action_time', freq='M'))['quantity'].sum().reset_index()
+monthly_sales = albumn_data.groupby(pd.Grouper(key=#ACTION#, freq='M'))[#QUANTITY#].sum().reset_index()
 monthly_sales.columns = ['Month','Total Albums']
 monthly_sales['Month']=monthly_sales['Month'].dt.strftime('%B %Y')
 
@@ -171,17 +286,17 @@ ax.set_title('Album Sales per Month', fontsize=20, weight='bold', font_propertie
 plt.tight_layout()
 plt.show(block=False)"""
 
-replacement_count = """staff_replacement_days = df.groupby('replaced')['Date'].nunique().reset_index(name='Days')
+replacement_count = """staff_replacement_days = df.groupby(#REPLACED#)['Date'].nunique().reset_index(name='Days')
 staff_replacement_days = staff_replacement_days.dropna()
-all_staff = df['staff'].unique()
-all_staff_df = pd.DataFrame(all_staff, columns=['staff'])
-staff_replacement_days_complete = all_staff_df.merge(staff_replacement_days, left_on='staff', right_on='replaced', how='left')
+all_staff = df[#STAFF#].unique()
+all_staff_df = pd.DataFrame(all_staff, columns=[#STAFF#])
+staff_replacement_days_complete = all_staff_df.merge(staff_replacement_days, left_on=#STAFF#, right_on=#REPLACED#, how='left')
 staff_replacement_days_complete['Days'] = staff_replacement_days_complete['Days'].fillna(0)
-staff_replacement_days_complete = staff_replacement_days_complete.drop(columns=['replaced'])
+staff_replacement_days_complete = staff_replacement_days_complete.drop(columns=[#REPLACED#])
 staff_replacement_days_complete = staff_replacement_days_complete.sort_values(by='Days', ascending=False)
 
 fig, ax = plt.subplots()
-ax.bar(staff_replacement_days_complete['staff'], staff_replacement_days_complete['Days'], color=medium)
+ax.bar(staff_replacement_days_complete[#STAFF#], staff_replacement_days_complete['Days'], color=medium)
 ax.set_xlabel('Staff', color=dark, font_properties=manjari_bold)
 ax.set_ylabel('Days', color=dark, font_properties=manjari_bold)
 ax.tick_params(axis='x', labelrotation=45)
@@ -196,13 +311,13 @@ logo_ax.imshow(logo_img)
 logo_ax.axis('off') 
 plt.show(block=False)"""
 
-replacement_count_table = """staff_replacement_days = df.groupby('replaced')['Date'].nunique().reset_index(name='Days')
+replacement_count_table = """staff_replacement_days = df.groupby(#REPLACED#)['Date'].nunique().reset_index(name='Days')
 staff_replacement_days = staff_replacement_days.dropna()
-all_staff = df['staff'].unique()
-all_staff_df = pd.DataFrame(all_staff, columns=['staff'])
-staff_replacement_days_complete = all_staff_df.merge(staff_replacement_days, left_on='staff', right_on='replaced', how='left')
+all_staff = df[#STAFF#].unique()
+all_staff_df = pd.DataFrame(all_staff, columns=[#STAFF#])
+staff_replacement_days_complete = all_staff_df.merge(staff_replacement_days, left_on=#STAFF#, right_on=#REPLACED#, how='left')
 staff_replacement_days_complete['Days'] = staff_replacement_days_complete['Days'].fillna(0)
-staff_replacement_days_complete = staff_replacement_days_complete.drop(columns=['replaced'])
+staff_replacement_days_complete = staff_replacement_days_complete.drop(columns=[#REPLACED#])
 staff_replacement_days_complete = staff_replacement_days_complete.sort_values(by='Days',ascending=False)
 
 fig, ax = plt.subplots(figsize=(8,1))
@@ -324,7 +439,7 @@ ax.set_title('Machine Sales', fontsize=20, weight='bold', font_properties=manjar
 plt.tight_layout()
 plt.show(block=False)"""
 
-total_sales_per_day_of_week = """df['Day'] = df['action_time'].dt.day_name()
+total_sales_per_day_of_week = """df['Day'] = df[#ACTION#].dt.day_name()
 total_sales_per_day = df.groupby('Day')['total'].sum().reindex(
     ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 ).reset_index()
@@ -359,7 +474,7 @@ ax.set_title('Total Sales per Day of Week', fontsize=20, weight='bold', font_pro
 plt.tight_layout()
 plt.show(block=False)"""
 
-total_sales_per_day_of_week_bar = """df['Day'] = df['action_time'].dt.day_name()
+total_sales_per_day_of_week_bar = """df['Day'] = df[#ACTION#].dt.day_name()
 total_sales_per_day = df.groupby('Day')['total'].sum().reindex(
     ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 )
@@ -402,7 +517,7 @@ logo_ax.axis('off')
 plt.show(block=False)"""
 
 bts_sales = """filtered_df = df[df['type']=='BTS']
-count_sales = filtered_df.groupby('quantity').sum().reset_index()
+count_sales = filtered_df.groupby(#QUANTITY#).sum().reset_index()
 count_sales.columns = ['Group', 'Count of Sales']
 
 fig, ax = plt.subplots(figsize=(8, 1))
@@ -445,8 +560,8 @@ logo_ax.axis('off')
 plt.tight_layout()
 plt.show(block=False)"""
 
-karmel_sales = """filtered_df = df[(df['staff']=='Karmel') & ~df['type'].isin(['Photo','Unknown'])]
-count_sales = filtered_df.groupby('staff')['quantity'].sum().reset_index()
+karmel_sales = """filtered_df = df[(df[#STAFF#]=='Karmel') & ~df['type'].isin(['Photo','Unknown'])]
+count_sales = filtered_df.groupby(#STAFF#)[#QUANTITY#].sum().reset_index()
 count_sales.columns = ['Staff', 'Count of Sales']
 
 fig, ax = plt.subplots(figsize=(8, 1))
@@ -477,8 +592,8 @@ ax.set_title("Count of Karmel's Album Sales", fontsize=20, weight='bold', font_p
 plt.tight_layout()
 plt.show(block=False)"""
 
-jess_total_sales="""filtered_df = df[(df['staff']=='Jess') & df['type'].isin(['Photo'])]
-count_sales = filtered_df.groupby('staff')['total'].sum().reset_index()
+jess_total_sales="""filtered_df = df[(df[#STAFF#]=='Jess') & df['type'].isin(['Photo'])]
+count_sales = filtered_df.groupby(#STAFF#)['total'].sum().reset_index()
 count_sales.columns = ['Staff', 'Total Sales']
 count_sales['Total Sales'] = count_sales['Total Sales'].apply(lambda x: f'${x:,.2f}')
 
@@ -563,7 +678,7 @@ logo_ax.imshow(logo_img)
 logo_ax.axis('off') 
 plt.show(block=False)"""
 
-shift_count_per_staff="""staff_shift_count = df.groupby('staff')['Date'].nunique().reset_index()
+shift_count_per_staff="""staff_shift_count = df.groupby(#STAFF#)['Date'].nunique().reset_index()
 staff_shift_count.columns = ['Staff','Shift Count']
 
 fig, ax = plt.subplots()
@@ -582,8 +697,8 @@ logo_ax.imshow(logo_img)
 logo_ax.axis('off') 
 plt.show(block=False)"""
 
-average_sales_per_shift="""total_per_employee_day = df.groupby(['staff','Date'])['total'].sum().reset_index()
-avg_per_employee = total_per_employee_day.groupby(['staff'])['total'].mean().reset_index()
+average_sales_per_shift="""total_per_employee_day = df.groupby([#STAFF#,'Date'])['total'].sum().reset_index()
+avg_per_employee = total_per_employee_day.groupby([#STAFF#])['total'].mean().reset_index()
 avg_per_employee.columns=['Staff','Average']
 
 fig, ax = plt.subplots()
@@ -602,8 +717,8 @@ logo_ax.imshow(logo_img)
 logo_ax.axis('off') 
 plt.show(block=False)"""
 
-average_sales_per_shift_table="""total_per_employee_day = df.groupby(['staff','Date'])['total'].sum().reset_index()
-avg_per_employee = total_per_employee_day.groupby(['staff'])['total'].mean().round(2).reset_index()
+average_sales_per_shift_table="""total_per_employee_day = df.groupby([#STAFF#,'Date'])['total'].sum().reset_index()
+avg_per_employee = total_per_employee_day.groupby([#STAFF#])['total'].mean().round(2).reset_index()
 avg_per_employee.columns=['Staff','Average']
 avg_per_employee['Average'] = avg_per_employee['Average'].apply(lambda x: f'${x:,.2f}')
 
@@ -675,8 +790,8 @@ employee_sales_pie_chart = """def format_autopct(pct, allvalues):
 
 fig, ax = plt.subplots(figsize=(9,9))
 total_sales_per_employee = df[~pd.isna(df['total'])]
-total_sales_per_employee_grouped = total_sales_per_employee.groupby('staff')['total'].sum().reset_index()
-ax.pie(total_sales_per_employee_grouped['total'], labels=total_sales_per_employee_grouped['staff'], autopct=lambda pct: format_autopct(pct, total_sales_per_employee_grouped['total']), textprops={'fontproperties': manjari_bold})
+total_sales_per_employee_grouped = total_sales_per_employee.groupby(#STAFF#)['total'].sum().reset_index()
+ax.pie(total_sales_per_employee_grouped['total'], labels=total_sales_per_employee_grouped[#STAFF#], autopct=lambda pct: format_autopct(pct, total_sales_per_employee_grouped['total']), textprops={'fontproperties': manjari_bold})
 ax.set_title('Distribution of Sales per Employee', color=dark, font_properties=manjari_bold)
 logo_ax = fig.add_axes([0.8, 0.85, 0.15, 0.15], anchor='NE', zorder=1)
 logo_ax.imshow(logo_img)
@@ -684,9 +799,9 @@ logo_ax.axis('off')
 plt.tight_layout()
 plt.show(block=False)"""
 
-boxplot_per_employee="""grouped_by_day = df.groupby(['staff','Date'])['total'].sum().reset_index()
-staff_names = grouped_by_day['staff'].unique()
-grouped_by_staff = [grouped_by_day[grouped_by_day['staff'] == staff]['total'].values for staff in staff_names]
+boxplot_per_employee="""grouped_by_day = df.groupby([#STAFF#,'Date'])['total'].sum().reset_index()
+staff_names = grouped_by_day[#STAFF#].unique()
+grouped_by_staff = [grouped_by_day[grouped_by_day[#STAFF#] == staff]['total'].values for staff in staff_names]
 fig, ax = plt.subplots(figsize=(9,6))
 box = ax.boxplot(grouped_by_staff, labels=staff_names, patch_artist=True)
 ax.set_title('Plot of Sales per Employee', color=dark, font_properties=manjari_bold)
@@ -800,8 +915,8 @@ plt.tight_layout()
 plt.show(block=False)"""
 
 area_chart_albums_sold_over_time="""album_sales = df[~df['type'].isin(['Unknown','Photo'])]
-total_album_sales = album_sales.groupby(['Date','type'])['quantity'].sum().reset_index()
-pivot_df = total_album_sales.pivot(index='Date', columns='type', values='quantity').fillna(0)
+total_album_sales = album_sales.groupby(['Date','type'])[#QUANTITY#].sum().reset_index()
+pivot_df = total_album_sales.pivot(index='Date', columns='type', values=#QUANTITY#).fillna(0)
 x = pivot_df.index  
 y = pivot_df.values.T 
 fig, ax = plt.subplots()
@@ -826,10 +941,10 @@ plt.show(block=False)
 """
 
 quantity_albums_over_time="""album_sales = df[~df['type'].isin(['Unknown','Photo'])]
-total_album_sales = album_sales.groupby(['Date'])['quantity'].sum().reset_index()
+total_album_sales = album_sales.groupby(['Date'])[#QUANTITY#].sum().reset_index()
 total_album_sales['Date']=pd.to_datetime(total_album_sales['Date'])
 fig, ax = plt.subplots()
-ax.bar(total_album_sales['Date'], total_album_sales['quantity'], color=medium)
+ax.bar(total_album_sales['Date'], total_album_sales[#QUANTITY#], color=medium)
 ax.set_xlabel('Date', color=dark, font_properties=manjari_bold)
 ax.set_ylabel('Albums Sold', color=dark, font_properties=manjari_bold)
 ax.tick_params(axis='x', labelrotation=45)
@@ -848,10 +963,10 @@ logo_ax.axis('off')
 plt.show(block=False)"""
 
 copies_over_time="""copy_sales = df[(df['type']=='Copy/Print')]
-total_copy_sales = copy_sales.groupby(['Date'])['quantity'].sum().reset_index()
+total_copy_sales = copy_sales.groupby(['Date'])[#QUANTITY#].sum().reset_index()
 total_copy_sales['Date']=pd.to_datetime(total_copy_sales['Date'])
 fig, ax = plt.subplots()
-ax.bar(total_copy_sales['Date'], total_copy_sales['quantity'], color=medium)
+ax.bar(total_copy_sales['Date'], total_copy_sales[#QUANTITY#], color=medium)
 ax.set_xlabel('Date', color=dark, font_properties=manjari_bold)
 ax.set_ylabel('Copies Printed', color=dark, font_properties=manjari_bold)
 ax.tick_params(axis='x', labelrotation=45)
@@ -869,13 +984,11 @@ logo_ax.imshow(logo_img)
 logo_ax.axis('off') 
 plt.show()"""
 
-copies_july="""#how many copies were printed over july
-
-copy_sales = df[(df['type']=='Copy/Print')]
-total_copy_sales = copy_sales.groupby(['Date'])['quantity'].sum().reset_index()
+copies_july="""copy_sales = df[(df['type']=='Copy/Print')]
+total_copy_sales = copy_sales.groupby(['Date'])[#QUANTITY#].sum().reset_index()
 total_copy_sales['Date']=pd.to_datetime(total_copy_sales['Date'])
 fig, ax = plt.subplots()
-ax.bar(total_copy_sales['Date'], total_copy_sales['quantity'], color=medium)
+ax.bar(total_copy_sales['Date'], total_copy_sales[#QUANTITY#], color=medium)
 ax.set_xlabel('Date', color=dark, font_properties=manjari_bold)
 ax.set_ylabel('Copies Printed', color=dark, font_properties=manjari_bold)
 ax.tick_params(axis='x', labelrotation=45)
@@ -936,7 +1049,7 @@ logo_ax.imshow(logo_img)
 logo_ax.axis('off') 
 plt.show()"""
 
-total_sales_per_day_of_week_barh = """df['Day'] = df['action_time'].dt.day_name()
+total_sales_per_day_of_week_barh = """df['Day'] = df[#ACTION#].dt.day_name()
 total_sales_per_day = df.groupby('Day')['total'].sum().reindex(
     ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 )
@@ -957,6 +1070,59 @@ logo_ax.imshow(logo_img)
 logo_ax.axis('off') 
 plt.show(block=False)"""
 
+staff_copy =  """copy_sales = df[df['type']=='Copy/Print']
+copy_sales_per_staff = copy_sales.groupby(#STAFF#)['total'].sum().reset_index()
+copy_sales_per_staff.columns = ['Staff', 'Total Sales ($)']
+fig, ax = plt.subplots()
+ax.bar(copy_sales_per_staff['Staff'],copy_sales_per_staff['Total Sales ($)'],color=medium)
+ax.set_xlabel('Staff', color=dark, font_properties=manjari_bold)
+ax.set_ylabel('Total Sales', color=dark, font_properties=manjari_bold)
+ax.tick_params(axis='x', labelrotation=90)
+for tick in ax.get_xticklabels():
+    tick.set_ha('right')
+ax.set_title('Total Sales in Copies per #STAFF#', color=dark, font_properties=manjari_bold)
+ax.tick_params(colors=dark)
+for label in ax.get_xticklabels() + ax.get_yticklabels():
+    label.set_fontproperties(manjari_regular)
+logo_ax = fig.add_axes([0.8, 0.85, 0.15, 0.15], anchor='NE', zorder=1)
+logo_ax.imshow(logo_img)
+logo_ax.axis('off') 
+plt.show(block=False)"""
+
+#total revenue generated per album
+
+total_revenue_generated_per_album = """album_sales = df[~df['type'].isin(['Photo','Copy/Print'])]
+album_sales_summary = copy_sales.groupby(#STAFF#)['total'].sum().reset_index()
+copy_sales_per_staff.columns = ['Staff', 'Total Sales ($)']
+fig, ax = plt.subplots()
+ax.bar(copy_sales_per_staff['Staff'],copy_sales_per_staff['Total Sales ($)'],color=medium)
+ax.set_xlabel('Staff', color=dark, font_properties=manjari_bold)
+ax.set_ylabel('Total Sales', color=dark, font_properties=manjari_bold)
+ax.tick_params(axis='x', labelrotation=90)
+for tick in ax.get_xticklabels():
+    tick.set_ha('right')
+ax.set_title('Total Sales in Copies per #STAFF#', color=dark, font_properties=manjari_bold)
+ax.tick_params(colors=dark)
+for label in ax.get_xticklabels() + ax.get_yticklabels():
+    label.set_fontproperties(manjari_regular)
+logo_ax = fig.add_axes([0.8, 0.85, 0.15, 0.15], anchor='NE', zorder=1)
+logo_ax.imshow(logo_img)
+logo_ax.axis('off') 
+plt.show(block=False)"""
+
+#average sales per transaction
+
+#average quantity per transaction
+
+#which product had highest total revenue
+
+#average transaction value per staff
+
+#number of times each album sold
+
+#top 5 albumns sold
+
+#bottom 5 albumns sold
 
 
 
@@ -965,197 +1131,275 @@ plt.show(block=False)"""
 
 
 
-data_1 = [
+
+
+base_data = [
 {
     "instruction": "show me machine sales over time",
-    "input": data_0_str,
+    "input": '',
     "output": machine_over_time
 },
 {
     "instruction": "give me sales results based off employee as a bar graph",
-    "input": data_0_str,
+    "input": '',
     "output": by_people
 },
 {
     "instruction": "give me a table of total albumns sold per month",
-    "input": data_0_str,
+    "input": '',
     "output": table_albums_month
 },
 {
     "instruction": "give me machine sales over time for july?",
-    "input": data_0_str,
+    "input": '',
     "output": machine_over_time_july
 },
 {
     "instruction": "Can I have machine sales over time for august?",
-    "input": data_0_str,
+    "input": '',
     "output": machine_over_time_august
 },
 {
     "instruction": "Hi, can you show me in a table the number of times employees needed to be replaced on a shift",
-    "input": data_0_str,
+    "input": '',
     "output": replacement_count_table
 },
 {
     "instruction": "Show how many employees needed to be replaced on a shift",
-    "input": data_0_str,
+    "input": '',
     "output": replacement_count
 },
 {
     "instruction": "give distribution of album sales",
-    "input": data_0_str,
+    "input": '',
     "output": album_distribution_sales
 },
 {
     "instruction": "Generate the distribution of album sales as a pie graph with actual numbers",
-    "input": data_0_str,
+    "input": '',
     "output": album_distribution_sales_actual
 },
 {
     "instruction": "Can you sum up the sales on both machines",
-    "input": data_0_str,
+    "input": '',
     "output": machine_sales
 },
 {
     "instruction": "How many times has each machine been used?",
-    "input": data_0_str,
+    "input": '',
     "output": machine_count
 },
 {
     "instruction": "total sales per day of week",
-    "input": data_0_str,
+    "input": '',
     "output": total_sales_per_day_of_week
 },
 {
     "instruction": "give me the total sales per day of week as a barchart",
-    "input": data_0_str,
+    "input": '',
     "output": total_sales_per_day_of_week_bar
 },
 {
     "instruction": "avg sales per day of week",
-    "input": data_0_str,
+    "input": '',
     "output": avg_sales_by_day_of_week
 },
 {
     "instruction": "how many BTS albums have we sold so far?",
-    "input": data_0_str,
+    "input": '',
     "output": bts_sales
 },
 {
     "instruction": "album sales vs photo sales?",
-    "input": data_0_str,
+    "input": '',
     "output": album_photo_sales
 },
 {
     "instruction": "how many album sales did Karmel have?",
-    "input": data_0_str,
+    "input": '',
     "output": karmel_sales
 },
 {
     "instruction": "total of photobooth sales on Jess' shifts?",
-    "input": data_0_str,
+    "input": '',
     "output": jess_total_sales
 },
 {
     "instruction": "total sales per month blue vs purple machine",
-    "input": data_0_str,
+    "input": '',
     "output": machine_by_month_comparison
 },
 {
     "instruction": "album sales over time",
-    "input": data_0_str,
+    "input": '',
     "output": album_sales
 },
 {
     "instruction": "can you count how many shifts each staff have been on",
-    "input": data_0_str,
+    "input": '',
     "output": shift_count_per_staff
 },
 {
     "instruction": "can you give me the average sales per shift per staff",
-    "input": data_0_str,
+    "input": '',
     "output": average_sales_per_shift
 },
 {
     "instruction": "What is the average sales each employee gets",
-    "input": data_0_str,
+    "input": '',
     "output": average_sales_per_shift_table
 },
 {
     "instruction": "Hi! What are our best selling days?",
-    "input": data_0_str,
+    "input": '',
     "output": top_day_sales
 },
 {
     "instruction": "pie chart of total sales per employee",
-    "input": data_0_str,
+    "input": '',
     "output": employee_sales_pie_chart
 },
 {
     "instruction": "Generate a visual showing a boxplot each employee sale",
-    "input": data_0_str,
+    "input": '',
     "output": boxplot_per_employee
 },
 {
     "instruction": "Give me a rundown of daily sales statistics",
-    "input": data_0_str,
+    "input": '',
     "output": daily_statistics
 },
 {
     "instruction": "get me the moving average of sales per week",
-    "input": data_0_str,
+    "input": '',
     "output": moving_avg_week
 },
 {
     "instruction": "tally the days with less than $50 in sales",
-    "input": data_0_str,
+    "input": '',
     "output": tally_days_less_than_50
 },
 {
     "instruction": "area chart of albums sold over time",
-    "input": data_0_str,
+    "input": '',
     "output": area_chart_albums_sold_over_time
 },
 {
     "instruction": "make me a plot of albums sold over time",
-    "input": data_0_str,
+    "input": '',
     "output": quantity_albums_over_time
 },
 {
     "instruction": "how many copies of photos were printed over time?",
-    "input": data_0_str,
+    "input": '',
     "output":  copies_over_time
 },
 {
     "instruction": "Can you produce a bar graph which shows number of copies printed in July",
-    "input": data_0_str,
+    "input": '',
     "output":  copies_july
 },
 {
     "instruction": "Can you show me the correlation between album sales and photo sales",
-    "input": data_0_str,
+    "input": '',
     "output":  correlation_between_album_photo
 },
 {
     "instruction": "Are sales of copies related to sales of photos",
-    "input": data_0_str,
+    "input": '',
     "output":  correlation_between_copy_photo
 },
 {
     "instruction": "can you give me a horizontal bar chart of the count of sales per day?",
-    "input": data_0_str,
+    "input": '',
     "output":  total_sales_per_day_of_week_barh
+
+},
+{
+    "instruction": "can you summarise the number of sales per hour?",
+    "input": '',
+    "output":  peak_hours_quantity
+
+},
+{
+    "instruction": "Tell me the total sales per hour?",
+    "input": '',
+    "output":  peak_hours_total
+
+},
+{
+    "instruction": "How many transactions have been $0",
+    "input": '',
+    "output":  total_0_sale_transactions_over_time
+
+},
+{
+    "instruction": "Do customers only buy photos, or do they buy copies too?",
+    "input": '',
+    "output":  photo_vs_copy
+
+},
+{
+    "instruction": "inform me which staff sells more copies",
+    "input": '',
+    "output":  staff_copy
+
+},
+{
+    "instruction": "tell me in table the total sales on weekends vs weekdays",
+    "input": '',
+    "output":  weekend_vs_weekday_table
+
+},
+{
+    "instruction": "tell me the total sales on weekends vs weekdays",
+    "input": '',
+    "output":  weekend_vs_weekday
+
 }
-
-
-
-
 
 
 ]
 
+#SCRAMBLE
 
-with open('Training/manual_add.json', 'w') as json_file:
+print(len(base_data))
+
+new_code_list = []
+
+for i,_ in enumerate(base_data):
+    random.seed(120)
+    index_arr = [random.randint(0,len(code_scrambler.df_columns_list)) for _ in range(5)]
+    for index in index_arr:
+        filename = code_scrambler.df_columns_list[index]['filename']
+        output= base_data[i]['output'].replace('#STAFF#',code_scrambler.df_columns_list[index]['staff'])
+        output = output.replace('#REPLACED#',code_scrambler.df_columns_list[index]['replaced'])
+        output = output.replace('#ACTION#',code_scrambler.df_columns_list[index]['action'])
+        output = output.replace('#QUANTITY#',code_scrambler.df_columns_list[index]['quantity'])
+
+        new_code_list.append({
+            "instruction": base_data[i]['instruction'],
+            'input': filename,
+            'output': output
+        })
+
+#RESTRUCTURE
+
+restructured_code = []
+
+for i in range(len(new_code_list)):
+    new_code = code_scrambler.rewrite_ast_to_plot(new_code_list[i]['output'])
+    restructured_code.append({
+        "instruction": new_code_list[i]["instruction"],
+        "input": new_code_list[i]["input"],
+        "output": new_code
+    })
+
+new_code_list.extend(restructured_code)
+
+# breakpoint()
+
+with open('Training/final_file.json', 'w') as json_file:
    
-    json.dump(data_1, json_file, indent=4) 
+    json.dump(new_code_list, json_file, indent=4) 
 
