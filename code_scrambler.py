@@ -101,9 +101,64 @@ class RewriteAxToPlt(ast.NodeTransformer):
             if node.attr in mat_plot_lib_all_plots:
                 return ast.Attribute(value=ast.Name(id='plt', ctx=ast.Load()), attr=node.attr, ctx=ast.Load())
             # For ax.set_* functions, replace them with plt.*
+            elif node.attr == 'xaxis':
+                return ast.Attribute(
+                    value=ast.Call(
+                        func=ast.Attribute(value=ast.Name(id="plt", ctx=ast.Load()), attr="gca", ctx=ast.Load()),
+                        args=[],
+                        keywords=[]
+                    ),
+                    attr="xaxis",
+                    ctx=ast.Load()
+                )
+            elif node.attr == "tick_params":
+                return ast.Attribute(
+                    value=ast.Call(
+                        func=ast.Attribute(value=ast.Name(id="plt", ctx=ast.Load()), attr="gca", ctx=ast.Load()),
+                        args=[],
+                        keywords=[]
+                    ),
+                    attr="tick_params",
+                    ctx=ast.Load()
+                )
+            elif node.attr =="get_xticklabels":
+                return ast.Attribute(
+                    value=ast.Call(
+                        func=ast.Attribute(value=ast.Name(id="plt", ctx=ast.Load()), attr="gca", ctx=ast.Load()),
+                        args=[],
+                        keywords=[]
+                    ),
+                    attr="get_xticklabels",
+                    ctx=ast.Load()
+                )
+            elif node.attr =="get_yticklabels":
+                return ast.Attribute(
+                    value=ast.Call(
+                        func=ast.Attribute(value=ast.Name(id="plt", ctx=ast.Load()), attr="gca", ctx=ast.Load()),
+                        args=[],
+                        keywords=[]
+                    ),
+                    attr="get_yticklabels",
+                    ctx=ast.Load()
+                )
             elif node.attr.startswith('set_'):
                 plt_func = node.attr.replace('set_', '')  # e.g., set_xlabel -> xlabel
                 return ast.Attribute(value=ast.Name(id='plt', ctx=ast.Load()), attr=plt_func, ctx=ast.Load())
+            
+        # elif isinstance(node.value, ast.Name) and node.value.id == 'fig':
+        #     if node.attr == 'add_axes':
+        #         return ast.Attribute(
+        #             value=ast.Call(
+        #                 func=ast.Attribute(
+        #                     value=ast.Name(id="plt", ctx=ast.Load()), attr="axes", ctx=ast.Load()
+        #                 ),
+        #                 args=node.args,         # Retain the original arguments (e.g., the position and size)
+        #                 keywords=node.keywords
+                        
+        #             ),
+        #             attr = [],
+        #             ctx = ast.load()
+        #         )
         return self.generic_visit(node)
     
 
@@ -127,7 +182,8 @@ def rewrite_ast_to_plot(code):
 
     # Convert the AST back to source code
     new_code = astor.to_source(transformed_tree)
-
+    new_code = new_code.replace('fig, ax = plt.subplots()\n','')
+    new_code = new_code.replace('fig.add_axes','plt.axes')
     return new_code
 
 def change_title_axes(code):
@@ -195,7 +251,7 @@ if __name__=='__main__':
             except Exception as e:
                 #fails to run - don't add!
                 success=False
-                print(f'{instruction} - Fail')
+                print(f'{instruction} - Fail\n')
                 print(e)
 
     with open(new_file_name, 'w') as json_file:

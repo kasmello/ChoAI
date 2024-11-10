@@ -61,7 +61,7 @@ def column_changes(query, state=120):
     random.seed(state)
     machine = random.choice(['as machine','as photobooth'])
     random.seed(state)
-    detail = random.choice(['as detail','as product','as "order"','as item'])
+    detail = random.choice(['as detail','as product','as item'])
 
     query = query.replace('as staff',staff)
     query = query.replace('as replaced',replaced)
