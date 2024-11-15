@@ -1,9 +1,9 @@
-from transformers import BartTokenizer, BartModel, pipeline
 import ast
 import astor
 import pandas as pd
 import json
 import random
+import re
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import matplotlib.font_manager as fm
@@ -15,8 +15,6 @@ def load_df(path):
     df['action_time'] = pd.to_datetime(df['action_time'])
     df['Date']=pd.to_datetime(df['Date'])
     return df
-
-
 
 
 manjari_bold_path = 'font/Manjari-Bold.ttf'
@@ -41,6 +39,7 @@ with open('ProcessedData/df_column_desc.txt','r') as file:
 
 mat_plot_lib_all_plots = [
     'plot',             # Line plot
+    'table',            # Table
     'scatter',          # Scatter plot
     'bar',              # Bar plot
     'barh',             # Horizontal bar plot
@@ -75,6 +74,10 @@ mat_plot_lib_all_plots = [
     'plot_trisurf',     # Triangular surface plot (3D)
 ]
 
+misc = [
+    "axis"
+]
+
 #scramble Title
 
 def scramble_title(title):
@@ -98,7 +101,7 @@ class RewriteAxToPlt(ast.NodeTransformer):
         # Replace ax.plot -> plt.plot, ax.set_xlabel -> plt.xlabel, etc.
         if isinstance(node.value, ast.Name) and node.value.id == 'ax':
             # For ax.plot(), we replace it with plt.plot()
-            if node.attr in mat_plot_lib_all_plots:
+            if node.attr in mat_plot_lib_all_plots or node.attr in misc:
                 return ast.Attribute(value=ast.Name(id='plt', ctx=ast.Load()), attr=node.attr, ctx=ast.Load())
             # For ax.set_* functions, replace them with plt.*
             elif node.attr == 'xaxis':
@@ -182,7 +185,7 @@ def rewrite_ast_to_plot(code):
 
     # Convert the AST back to source code
     new_code = astor.to_source(transformed_tree)
-    new_code = new_code.replace('fig, ax = plt.subplots()\n','')
+    new_code = re.sub(r"fig, ax = ", "", new_code)
     new_code = new_code.replace('fig.add_axes','plt.axes')
     return new_code
 
@@ -194,29 +197,6 @@ def additional_code_rewrites(code):
     old_1 = """
     """
 
-
-def scramble_matplotlib_code(code_string):
-    # Split the code into lines
-    code_lines = code_string.strip().split('\n')
-    
-    # Extract lines that contain certain matplotlib functions
-    plot_commands = [line for line in code_lines if "plt.plot" in line]
-    label_commands = [line for line in code_lines if any(func in line for func in ["plt.title", "plt.xlabel", "plt.ylabel", 'ax.set_title','ax.set_xlabel','ax.set_ylabel'])]
-    grid_or_legend_commands = [line for line in code_lines if "plt.grid" in line or "plt.legend" in line]
-    
-    # Shuffle the order of these components
-    random.shuffle(plot_commands)
-    random.shuffle(label_commands)
-    random.shuffle(grid_or_legend_commands)
-    
-    # Combine the scrambled parts back into the code
-    scrambled_code = "\n".join(plot_commands + label_commands + grid_or_legend_commands)
-    
-    # Add plt.show() if it is not in the original code
-    if "plt.show()" not in code_string:
-        scrambled_code += "\nplt.show()"
-    
-    return scrambled_code
 
 
 

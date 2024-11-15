@@ -78,7 +78,7 @@ def column_changes(query, state=120):
 
 def main():
     # square_extract.main()
-    # roster.main(mask=False)
+    # roster.main()
     # machine_payments.main()
 
     conn = sqlite3.connect(":memory:") 

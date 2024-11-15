@@ -108,8 +108,13 @@
         "cornsilk": "#FFF8DC",
         "lemon": "#FFF44F"
     },
-    "start date": {
+    "date": {
         "first of August": "2024-08-01",
+        "aug 3": "2024-08-03",
+        "start of July": "2024-07-01",
+        "Start of Winter": "2024-06-01",
+        "Opening": "2024-06-10",
+        "Shop Open": "2024-06-10",
         "5 Aug": "2024-08-05",
         "December 3": "2024-12-03",
         "3rd of December": "2024-12-03",
@@ -124,31 +129,27 @@
         "July 4th": "2024-07-04",
         "September 1": "2024-09-01",
         "Oct 31": "2024-10-31",
+        "20 Jun": "2024-06-20",
         "November 11th": "2024-11-11",
         "Dec 25": "2024-12-25",
         "31st December": "2024-12-31",
-        "August 18th": "2024-08-18"
-    },
-    "end date": {
-        "first of August": "2024-08-01",
-        "5 Aug": "2024-08-05",
-        "December 3": "2024-12-03",
-        "3rd of December": "2024-12-03",
-        "10th of January": "2024-01-10",
-        "January 15": "2024-01-15",
-        "Feb 2": "2024-02-02",
-        "February 14th": "2024-02-14",
-        "March 25": "2024-03-25",
-        "April 1st": "2024-04-01",
-        "5th of July": "2024-07-05",
-        "June 30": "2024-06-30",
-        "July 4th": "2024-07-04",
-        "September 1": "2024-09-01",
-        "Oct 31": "2024-10-31",
-        "November 11th": "2024-11-11",
-        "Dec 25": "2024-12-25",
-        "31st December": "2024-12-31",
-        "August 18th": "2024-08-18"
+        "August 18th": "2024-08-18",
+        "last day of july": "2024-07-31",
+        "17 August": "2024-08-17",
+        "start of year": "2024-01-01",
+        "end of year": "2024-12-31",
+        "EOY": "2024-12-31",
+        "1 sep": "2024-09-01",
+        "September 13th": "2024-09-13",
+        "Start of August": "2024-08-01",
+        "Start of Spring": "2024-09-01",
+        "11 of July": "2024-07-11",
+        "first october": "2024-10-01",
+        "eofy": "2025-06-30",
+        "start of financial year 2025": "2024-07-01"
+
+
+
     },
     "period": {
         "August": ["2024-08-01", "2024-08-31"],
@@ -167,7 +168,51 @@
         "Fall 2024": ["2024-03-01", "2024-05-31"],
         "Winter 2024": ["2024-06-01", "2024-08-31"],
         "Spring 2024": ["2024-09-01", "2024-11-30"],
-        "October to December": ["2024-10-01", "2024-12-31"]
+        "October to December": ["2024-10-01", "2024-12-31"],
+        "January": ["2024-01-01", "2024-01-31"],
+        "June": ["2024-06-01","2024-06-30"],
+        "Dec": ["2024-12-01","2024-12-31"],
+        "last year": ["2023-01-01","2023-12-31"],
+        "summer": ["2023-12-01", "2024-02-29"]
+
+    },
+    "staff_name": [
+        "Adam",
+        "Ben",
+        "Clara",
+        "Dennis",
+        "Elle",
+        "Fiona",
+        "Georgina"
+    ],
+    "band_name": {
+        "AESPA": ["aespa"], 
+        "Tomorrow X Together": ["Tomorrow X Together","txt", "T X T","TomorrowXTogether"], 
+        "BTS": ["bts", "bangtan boys","bang tan boys"], 
+        "IU": ["iu","Lee Ji-eun"], 
+        "Stray Kids": ["stray kids","skz","the kids","the kidz"],
+       "Le Sserafim": ["Le Sserafim","Sserafim","LeSserafim"], 
+       "ENHYPEN": ["enhypen","en-"], 
+       "Seventeen": ["Seventeen","SVT"], 
+       "Twice": ["Twice","Teudoongie"], 
+       "BTS V": ["BTS V","V","Taehyung", "taetae","tae tae", "tae"],
+       "(G)I-DLE": ["(G)I-DLE","GIDLE","G IDLE"], 
+       "BTS Jimin": ["BTS Jimin","Jimin",""], 
+       "ATEEZ": ["ATEEZ","KQ Fellaz"], 
+       "NCT Dream": ["NCT Dream"], 
+       "ITZY": ["ITZY"], 
+       "New Jeans": ["New Jeans","NewJeans"],
+       "BTS JungKook":["BTS JungKook","JungKook"], 
+       "EXO": ["EXO"]
+    },
+    "category_name": {
+        "Album": ["album","music album"], 
+        "Photo": ["photo","picture","print","snap","film"], 
+        "Miscellaneous": ["Miscellaneous","misc","other item","misc item", "ancillary","ancillary items","non-product","non-merchandise", "non-product item", "non-merchandise item"]
+    },
+    "machine_name": {
+        "Blue Machine": ["blue machine","blue", "aqua", "blue photobooth", "light blue photobooth","aqua photobooth", "light blue machine"], 
+        "Pink Machine": ["pink machine","pink", "purple", "pink photobooth", "purple photobooth", "purple machine"]
     },
     "names": [
         "Category A",
@@ -234,7 +279,7 @@
         "tricontourf",      
         "plot_surface",     
         "plot_wireframe",   
-        "plot_trisurf",     
+        "plot_trisurf"    
     ]
      
 }

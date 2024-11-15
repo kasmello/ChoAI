@@ -38,7 +38,7 @@ orders_api = client.orders
 
 def get_artist(album_name):
     if not isinstance(album_name, str):
-        return 'Miscellaneous'
+        return None
     if 'STRAY KIDS' in album_name.upper():
         return 'Stray Kids'
     elif 'TWICE' in album_name.upper():
@@ -82,7 +82,7 @@ def get_artist(album_name):
     elif 'ZEROBATomorrow X TogetherSEONE' in album_name.upper() or 'TXT' in album_name:
         return 'Tomorrow X Together'
     else:
-        return 'Miscellaneous'
+        return None
 
 
 def fetch_order(order_id):
@@ -148,7 +148,7 @@ def main(output='ProcessedData/square_payments.csv'):
     orders_df['base']=orders_df['base_price_money'].apply(lambda x: x['amount']/100)
     orders_df['total']=orders_df['total_money'].apply(lambda x: x['amount']/100)
     orders_df['type']=orders_df['name'].apply(get_artist)
-    orders_df['category'] = orders_df['type'].apply(lambda x: 'Miscellaneous' if x == 'Miscellaneous' else 'Album')
+    orders_df['category'] = orders_df['type'].apply(lambda x: 'Miscellaneous' if not x else 'Album')
     orders_df = orders_df[['order_id','name','variation_name','quantity','base','total','type','category']]
     # payments_df['amount_money']=payments_df['amount_money'].apply(lambda x: x['amount']/100)
     all_orders_df = pd.merge(payments_df,orders_df,on='order_id',how='left')
