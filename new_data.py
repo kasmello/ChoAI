@@ -680,7 +680,8 @@ logo_ax.axis('off')
 
         ],
         output_raw = [
-"""filtered_df = df[df['#ARTIST#']=='#BAND_NAME#']
+"""
+filtered_df = df[df['#ARTIST#']=='#BAND_NAME#']
 count_sales = filtered_df.groupby('#ARTIST#')['#QUANTITY#'].sum().reset_index()
 count_sales.columns = ['#XAXIS#', '#YAXIS#']
 
@@ -706,7 +707,6 @@ for (i, j), cell in table.get_celld().items():
         cell.set_facecolor("#8F81DD") if i % 2 == 0 else cell.set_facecolor("#BCADFF")
 
 ax.set_title('#TITLE#', weight='bold', font_properties=manjari_bold)
-
 """
         ]
     ),
@@ -742,7 +742,7 @@ logo_ax.axis('off')
     data_entry(
         label = "#STAFF_NAME#_#CATEGORY_ALTNAME#_sales",
         instructions=[
-            instruction("how many #CATEGORY_ALTNAME# sales did #STAFF_NAME# have?", 'Staff',"QUantity of Sales", "Quantity of #STAFF_NAME#'s #CATEGORY_ALTNAME# Sales"),
+            instruction("how many #CATEGORY_ALTNAME# sales did #STAFF_NAME# have?", 'Staff',"Quantity of Sales", "Quantity of #STAFF_NAME#'s #CATEGORY_ALTNAME# Sales"),
             instruction("count how many #CATEGORY_ALTNAME#s #STAFF_NAME# sold?", 'Staff',"Albums Sold", "#STAFF_NAME#'s #CATEGORY_ALTNAME# Sales"),
             instruction("Calculate #STAFF_NAME#'s #CATEGORY_ALTNAME# sales", 'Staff', "Number of #CATEGORY_ALTNAME#s", "#STAFF_NAME#'s #CATEGORY_ALTNAME# Sales"),
             instruction("#STAFF_NAME# #CATEGORY_ALTNAME# sales", 'Staff', "#CATEGORY_ALTNAME# Sales", "#STAFF_NAME# #CATEGORY_ALTNAME# Sales"),
@@ -750,8 +750,14 @@ logo_ax.axis('off')
 
         ],
         output_raw = [
-"""filtered_df = df[(df['#STAFF#']=='#STAFF_NAME#') & (df['#CATEGORY#']=='#CATEGORY_NAME#')]
-count_sales = filtered_df.groupby('#STAFF#')['#QUANTITY#'].sum().reset_index()
+"""
+def sum_category(list_of_values):
+    #CATEGORY_NAME#_column = list_of_values['#CATEGORY#']
+    #QUANTITY#_column = list_of_values['#QUANTITY#']
+    return np.where(#CATEGORY_NAME#_column=='#CATEGORY_NAME#', #QUANTITY#_column, 0).sum()
+
+filtered_df = df[df['#STAFF#']=='#STAFF_NAME#']
+count_sales = filtered_df.groupby('#STAFF#').apply(sum_category).reset_index()
 count_sales.columns = ['#XAXIS#', '#YAXIS#']
 
 fig, ax = plt.subplots(figsize=(10, 8))
@@ -941,7 +947,7 @@ avg_per_employee = total_per_employee_day.groupby(['#STAFF#'])['#TOTAL#'].mean()
 avg_per_employee.columns=["#XAXIS#",'#YAXIS#']
 
 fig, ax = plt.subplots(figsize=(10, 8))
-ax.bar(avg_per_employee["#XAXIS#"], avg_per_employee['#YAXIS#''], color="#8F81DD")
+ax.bar(avg_per_employee["#XAXIS#"], avg_per_employee['#YAXIS#'], color="#8F81DD")
 ax.set_xlabel("#XAXIS#", color="#3B3365", font_properties=manjari_bold)
 ax.set_ylabel('#YAXIS#', color="#3B3365", font_properties=manjari_bold)
 ax.tick_params(axis='x', labelrotation=45)
@@ -1078,7 +1084,7 @@ logo_ax.imshow(logo_img)
 logo_ax.axis('off') 
 ax.set_xlabel('#XAXIS#', color="#3B3365", font_properties=manjari_bold)
 ax.set_ylabel('#YAXIS#', color="#3B3365", font_properties=manjari_bold)
-colors=["#800000", "#FF7F50", "#90EE90", "#0000FF", "#BCADFF", #"8F81DD", "#3B3365"]
+colors=["#800000", "#FF7F50", "#90EE90", "#0000FF", "#BCADFF", "#8F81DD", "#3B3365"]
 for label in ax.get_xticklabels() + ax.get_yticklabels():
     label.set_fontproperties(manjari_regular)
 
@@ -1190,7 +1196,7 @@ for (i, j), cell in table.get_celld().items():
         cell.set_facecolor("#3B3365") 
     else:
         cell.set_text_props(weight='bold', color='black',font=manjari_bold)
-        cell.set_facecolor("#8F81DD") if i % 2 == 0 else cell.set_facecolor("#BCSDFF")
+        cell.set_facecolor("#8F81DD") if i % 2 == 0 else cell.set_facecolor("#BCADFF")
 
 ax.set_title("#TITLE#", weight='bold', font_properties=manjari_bold)
 
@@ -1200,8 +1206,8 @@ ax.set_title("#TITLE#", weight='bold', font_properties=manjari_bold)
     data_entry(
         label = "area_chart_albums_sold_over_time",
         instructions=[
-            instruction("area chart of albums sold over time", 'Date', "Albums Sold", "Quantity of Albums Sold over Time'"),
-            instruction("Make an area chart about album sales in timeline", 'Date', "Albums Sold", "Albums Sold over Time'"),
+            instruction("area chart of albums sold over time", 'Date', "Albums Sold", "Quantity of Albums Sold over Time"),
+            instruction("Make an area chart about album sales in timeline", 'Date', "Albums Sold", "Albums Sold over Time"),
         ],
         output_raw = [
 """album_sales = df[df['#CATEGORY#']=='Album']
@@ -1231,19 +1237,16 @@ logo_ax.axis('off')
         ]
     ),
     data_entry(
-        label = "area_chart_albums_sold_over_time",
+        label = "quantity_albums_over_time",
         instructions=[
-            instruction("area chart of albums sold over time", 'Date', "Albums Sold", "Quantity of Albums Sold over Time'"),
-            instruction("Make an area chart about album sales in timeline", 'Date', "Albums Sold", "Albums Sold over Time'"),
+            instruction("make me a plot of albums sold over time", 'Date', "Albums Sold", "Quantity of Albums Sold over Time"),
         ],
         output_raw = [
 """album_sales = df[df['#CATEGORY#']=='Album']
-total_album_sales = album_sales.groupby(['Date','#CATEGORY#'])['#QUANTITY#'].sum().reset_index()
-pivot_df = total_album_sales.pivot(index='Date', columns='#CATEGORY#', values='#QUANTITY#').fillna(0)
-x = pivot_df.index  
-y = pivot_df.values.T 
+total_album_sales = album_sales.groupby(['Date'])['#QUANTITY#'].sum().reset_index()
+total_album_sales['Date']=pd.to_datetime(total_album_sales['Date'])
 fig, ax = plt.subplots(figsize=(10, 8))
-ax.stackplot(x, y, labels=pivot_df.columns, alpha=0.8)
+ax.bar(total_album_sales['Date'], total_album_sales['#QUANTITY#'], color="#8F81DD")
 ax.set_xlabel('#XAXIS#', color="#3B3365", font_properties=manjari_bold)
 ax.set_ylabel('#YAXIS#', color="#3B3365", font_properties=manjari_bold)
 ax.tick_params(axis='x', labelrotation=45)
@@ -1253,15 +1256,477 @@ ax.xaxis.set_major_locator(mdates.WeekdayLocator(interval=1))
 ax.set_title('#TITLE#', color="#3B3365", font_properties=manjari_bold)
 ax.tick_params(colors="#3B3365")
 ax.set_xlim(df['Date'].min()-pd.Timedelta(days=3),df['Date'].max()+pd.Timedelta(days=3))
-ax.xaxis.set_major_formatter(mdates.DateFormatter('%d/%m/%Y'))
+ax.xaxis.set_major_formatter(mdates.DateFormatter('%d/%m/%Y')) 
 for label in ax.get_xticklabels() + ax.get_yticklabels():
     label.set_fontproperties(manjari_regular)
-ax.legend(loc='center right',bbox_to_anchor=(1.35, 0.5))
 logo_ax = fig.add_axes([0.8, 0.85, 0.15, 0.15], anchor='NE', zorder=1)
 logo_ax.imshow(logo_img)
 logo_ax.axis('off') 
 """
         ]
+    ),
+    data_entry(
+        label = "copies_over_time",
+        instructions=[
+            instruction("how many copies of photos were printed over time", 'Date', "Copies Printed", "Copied Over Time"),
+        ],
+        output_raw = [
+"""copy_sales = df[(df['#DETAIL#']=='Copy')]
+total_copy_sales = copy_sales.groupby(['Date'])['#QUANTITY#'].sum().reset_index()
+total_copy_sales['Date']=pd.to_datetime(total_copy_sales['Date'])
+fig, ax = plt.subplots(figsize=(10, 8))
+ax.bar(total_copy_sales['Date'], total_copy_sales['#QUANTITY#'], color="#8F81DD")
+ax.set_xlabel('#XAXIS#', color="#3B3365", font_properties=manjari_bold)
+ax.set_ylabel('#YAXIS#', color="#3B3365", font_properties=manjari_bold)
+ax.tick_params(axis='x', labelrotation=45)
+for tick in ax.get_xticklabels():
+    tick.set_ha('right')
+ax.xaxis.set_major_locator(mdates.WeekdayLocator(interval=1))
+ax.set_title('#TITLE#', color="#3B3365", font_properties=manjari_bold)
+ax.tick_params(colors="#3B3365")
+ax.set_xlim(df['Date'].min()-pd.Timedelta(days=3),df['Date'].max()+pd.Timedelta(days=3))
+ax.xaxis.set_major_formatter(mdates.DateFormatter('%d/%m/%Y')) 
+for label in ax.get_xticklabels() + ax.get_yticklabels():
+    label.set_fontproperties(manjari_regular)
+logo_ax = fig.add_axes([0.8, 0.85, 0.15, 0.15], anchor='NE', zorder=1)
+logo_ax.imshow(logo_img)
+logo_ax.axis('off') 
+"""
+        ]
+    ),
+    data_entry(
+        label = "copies_#PERIOD#",
+        instructions=[
+            instruction("copies between #START# and #END#", 'Date', "Copies", "Quantity of Sold Copies between #START# and #END#"),
+        ],
+        output_raw = [
+"""copy_sales = df[(df['#DETAIL#']=='Copy')]
+total_copy_sales = copy_sales.groupby(['Date'])['#QUANTITY#'].sum().reset_index()
+total_copy_sales['Date']=pd.to_datetime(total_copy_sales['Date'])
+fig, ax = plt.subplots(figsize=(10, 8))
+ax.bar(total_copy_sales['Date'], total_copy_sales['#QUANTITY#'], color="#8F81DD")
+ax.set_xlabel('#XAXIS#', color="#3B3365", font_properties=manjari_bold)
+ax.set_ylabel('#YAXIS# Printed', color="#3B3365", font_properties=manjari_bold)
+ax.tick_params(axis='x', labelrotation=45)
+for tick in ax.get_xticklabels():
+    tick.set_ha('right')
+ax.set_title('#TITLE#', color="#3B3365", font_properties=manjari_bold)
+ax.tick_params(colors="#3B3365")
+ax.set_xlim(pd.to_datetime('2024-07-01')-pd.Timedelta(days=1), pd.to_datetime('2024-07-31')+pd.Timedelta(days=1))
+ax.xaxis.set_major_formatter(mdates.DateFormatter('%d/%m/%Y')) 
+for label in ax.get_xticklabels() + ax.get_yticklabels():
+    label.set_fontproperties(manjari_regular)
+logo_ax = fig.add_axes([0.8, 0.85, 0.15, 0.15], anchor='NE', zorder=1)
+logo_ax.imshow(logo_img)
+logo_ax.axis('off') 
+"""
+    ]
+    ),
+    data_entry(
+        label = "correlation_between_album_photo",
+        instructions=[
+            instruction("Can you show me the correlation between album sales and photo sales", 'Photo Sales ($)', "Album Sales ($)", "Correlation between Photo and Album Sales"),
+            instruction("Show relationship between album and film sales", 'Film Sales ($)', "Album Sales ($)", "Relationship between Film and Album Sales"),
+        ],
+        output_raw = [
+"""photos_df = df[df['#CATEGORY#']=='Photo']
+albums_df = df[df['#CATEGORY#']=='Album']
+photo_sales = photos_df.groupby('Date')['#TOTAL#'].sum().reset_index(name='photo_sales')
+album_sales = albums_df.groupby('Date')['#TOTAL#'].sum().reset_index(name='album_sales')
+merged_sales = pd.merge(photo_sales, album_sales, on='Date', how='inner')
+
+fig, ax = plt.subplots(figsize=(10, 8))
+ax.scatter(merged_sales['photo_sales'], merged_sales['album_sales'], color="#8F81DD")
+ax.set_xlabel('#XAXIS#', color="#3B3365", font_properties=manjari_bold)
+ax.set_ylabel('#YAXIS#', color="#3B3365", font_properties=manjari_bold)
+ax.tick_params(axis='x', labelrotation=45)
+for tick in ax.get_xticklabels():
+    tick.set_ha('right')
+ax.set_title('#TITLE#', color="#3B3365", font_properties=manjari_bold)
+ax.tick_params(colors="#3B3365")
+for label in ax.get_xticklabels() + ax.get_yticklabels():
+    label.set_fontproperties(manjari_regular)
+logo_ax = fig.add_axes([0.8, 0.85, 0.15, 0.15], anchor='NE', zorder=1)
+logo_ax.imshow(logo_img)
+logo_ax.axis('off') 
+"""
+    ]
+    ),
+    data_entry(
+        label = "correlation_between_copy_photo",
+        instructions=[
+            instruction("Are sales of copies related to sales of photos", 'Photo Sales ($)', "Copy Sales ($)", "Relationship between Photo and Copy Sales"),
+            instruction("show correlation between Copy and Film", 'Copy Sales ($)', "Film Sales ($)", "Correlation between Copy and Film Sales"),
+        ],
+        output_raw = [
+"""photos_df = df[df['#CATEGORY#']=='Photo']
+copy_df = df[df['#DETAIL#']=='Copy']
+photo_sales = photos_df.groupby('Date')['#TOTAL#'].sum().reset_index(name='photo_sales')
+copy_df = copy_df.groupby('Date')['#TOTAL#'].sum().reset_index(name='copy_sales')
+merged_sales = pd.merge(photo_sales, copy_df, on='Date', how='inner')
+
+fig, ax = plt.subplots(figsize=(10, 8))
+ax.scatter(merged_sales['photo_sales'], merged_sales['copy_sales'], color="#8F81DD")
+ax.set_xlabel('#XAXIS#', color="#3B3365", font_properties=manjari_bold)
+ax.set_ylabel('#YAXIS#', color="#3B3365", font_properties=manjari_bold)
+ax.tick_params(axis='x', labelrotation=45)
+for tick in ax.get_xticklabels():
+    tick.set_ha('right')
+ax.set_title('#TITLE#', color="#3B3365", font_properties=manjari_bold)
+ax.tick_params(colors="#3B3365")
+for label in ax.get_xticklabels() + ax.get_yticklabels():
+    label.set_fontproperties(manjari_regular)
+logo_ax = fig.add_axes([0.8, 0.85, 0.15, 0.15], anchor='NE', zorder=1)
+logo_ax.imshow(logo_img)
+logo_ax.axis('off') 
+"""
+    ]
+    ),
+    data_entry(
+        label = "total_sales_per_day_of_week_barh",
+        instructions=[
+            instruction("give me a horizontal bar chart of the count of sales per weekday", 'Count of Sales', "Day of Week", "Sales Count by Day of Week"),
+            instruction("Show the quantity of sales on unique day of week", 'Quantity of Sales', "Day of Week", "Sales Quantity by Day of Week"),
+        ],
+        output_raw = [
+"""df['Day'] = df['#ACTION#'].dt.day_name()
+total_sales_per_day = df.groupby('Day')['#QUANTITY#'].sum().reset_index()
+fig, ax = plt.subplots(figsize=(10, 8))
+ax.barh(total_sales_per_day['Day'],total_sales_per_day['#QUANTITY#'],color="#8F81DD")
+ax.set_xlabel('#XAXIS#', color="#3B3365", font_properties=manjari_bold)
+ax.set_ylabel('#YAXIS#', color="#3B3365", font_properties=manjari_bold)
+ax.tick_params(axis='x', labelrotation=90)
+for tick in ax.get_xticklabels():
+    tick.set_ha('right')
+ax.set_title('#TITLE#', color="#3B3365", font_properties=manjari_bold)
+ax.tick_params(colors="#3B3365")
+for label in ax.get_xticklabels() + ax.get_yticklabels():
+    label.set_fontproperties(manjari_regular)
+logo_ax = fig.add_axes([0.8, 0.85, 0.15, 0.15], anchor='NE', zorder=1)
+logo_ax.imshow(logo_img)
+logo_ax.axis('off') 
+"""
+    ]
+    ),
+    data_entry(
+        label = "staff_copy",
+        instructions=[
+            instruction("inform which staff sells more copies", 'Staff', "Total Copy Sales", "Ordering Staff by Copy Sales"),
+            instruction("Show order of employee by quantity of copy sales", 'Employee', "Quantity of Copy Sales", "Employees Ordered by Copy Sales"),
+        ],
+        output_raw = [
+"""copy_sales = df[df['#DETAIL#']=='Copy']
+copy_sales_per_staff = copy_sales.groupby('#STAFF#')['#TOTAL#'].sum().reset_index()
+copy_sales_per_staff.columns = ['#XAXIS#', '#YAXIS#']
+copy_sales_per_staff = copy_sales_per_staff.sort_values(by='#YAXIS#', ascending=False)
+fig, ax = plt.subplots(figsize=(10, 8))
+ax.bar(copy_sales_per_staff["#XAXIS#"],copy_sales_per_staff['#YAXIS#'],color="#8F81DD")
+ax.set_xlabel("#XAXIS#", color="#3B3365", font_properties=manjari_bold)
+ax.set_ylabel('Total Sales', color="#3B3365", font_properties=manjari_bold)
+ax.tick_params(axis='x', labelrotation=90)
+for tick in ax.get_xticklabels():
+    tick.set_ha('right')
+ax.set_title('#TITLE#', color="#3B3365", font_properties=manjari_bold)
+ax.tick_params(colors="#3B3365")
+for label in ax.get_xticklabels() + ax.get_yticklabels():
+    label.set_fontproperties(manjari_regular)
+logo_ax = fig.add_axes([0.8, 0.85, 0.15, 0.15], anchor='NE', zorder=1)
+logo_ax.imshow(logo_img)
+logo_ax.axis('off') 
+"""
+    ]
+    ),
+    data_entry(
+        label = "total_revenue_generated_per_album",
+        instructions=[
+            instruction('revenue of each unique album. Make into bar plot, make title "total revenue of all albums"', 'Album', "Total Revenue ($)", "Total Revenue of All Albums"),
+            instruction('give sales of each album', 'Album', "Total Sales ($)", "Total Sales of All Albums"),
+        ],
+        output_raw = [
+"""album_sales = df[df['#CATEGORY#']=='Album']
+album_sales_summary = album_sales.groupby('#DETAIL#')['#TOTAL#'].sum().reset_index()
+album_sales_summary.columns = ["#XAXIS#", '#YAXIS#']
+fig, ax = plt.subplots(figsize=(10, 8))
+ax.bar(album_sales_summary["#XAXIS#"],album_sales_summary['#YAXIS#'],color="#8F81DD")
+ax.set_xlabel("#XAXIS#", color="#3B3365", font_properties=manjari_bold)
+ax.set_ylabel('Total Sales', color="#3B3365", font_properties=manjari_bold)
+ax.tick_params(axis='x', labelrotation=90)
+for tick in ax.get_xticklabels():
+    tick.set_ha('right')
+ax.set_title('#TITLE#', color="#3B3365", font_properties=manjari_bold)
+ax.tick_params(colors="#3B3365")
+for label in ax.get_xticklabels() + ax.get_yticklabels():
+    label.set_fontproperties(manjari_regular)
+logo_ax = fig.add_axes([0.8, 0.85, 0.15, 0.15], anchor='NE', zorder=1)
+logo_ax.imshow(logo_img)
+logo_ax.axis('off') 
+"""
+    ]
+    ),
+    data_entry(
+        label = "average_sale_per_transaction",
+        instructions=[
+            instruction('what is the average sale per transaction', 'Category', "AVG Value ($)", "Average Sale per Transaction Type"),
+            instruction('mean value of revenue per type of transaction', 'Type', "Mean Revenue ($)", "Mean Revenue per Transaction Type"),
+        ],
+        output_raw = [
+"""transaction_total = df.groupby(['#CATEGORY#','#ORDER_ID#'])['#TOTAL#'].sum().reset_index()
+average_transaction = transaction_total.groupby('#CATEGORY#')['#TOTAL#'].mean().reset_index()
+average_transaction.columns=['#XAXIS#','#YAXIS#']
+fig, ax = plt.subplots(figsize=(10, 8))
+ax.axis('off')
+ax.axis('tight')
+table = ax.table(
+    cellText=average_transaction.values, 
+    colLabels=average_transaction.columns, 
+    cellLoc='center',
+    bbox=[0.05, 0.1, 0.9, 0.8]
+)
+logo_ax = fig.add_axes([0.8, 0.85, 0.15, 0.15], anchor='NE', zorder=1)
+logo_ax.imshow(logo_img)
+logo_ax.axis('off') 
+
+for (i, j), cell in table.get_celld().items():
+    if i == 0:  
+        cell.set_text_props(weight='bold', color='white',font=manjari_bold)
+        cell.set_facecolor("#3B3365") 
+    else:
+        cell.set_text_props(weight='bold', color='black',font=manjari_bold)
+        cell.set_facecolor("#8F81DD") if i % 2 == 0 else cell.set_facecolor("#BCADFF")
+
+ax.set_title('#TITLE#', weight='bold', font_properties=manjari_bold)
+
+"""
+    ]
+    ),
+    data_entry(
+        label = "average_quantity_per_transaction",
+        instructions=[
+            instruction('what is the avg quantity per transaction? Make horizontal axis "Type of Transaction", vertical axis "AVG", title = "Average Quantity per Transaction"', 'Type of Transaction', "AVG", "Average Quantity per Transaction"),
+            instruction('what is the mean count of items per transaction? Make x axis "Transaction", y axis "AVG", title is "Average Count each Transaction"', 'Transaction', "AVG", "Average Count each Transaction"),
+            instruction('draw mean items per transaction in table', 'Category', "Mean Items", "Mean Items per Transaction"),
+        ],
+        output_raw = [
+"""transaction_total = df.groupby(['#CATEGORY#','#ORDER_ID#'])['#QUANTITY#'].sum().reset_index()
+average_transaction = transaction_total.groupby('#CATEGORY#')['#QUANTITY#'].mean().reset_index()
+average_transaction.columns=['#XAXIS#','#YAXIS#']
+fig, ax = plt.subplots(figsize=(10, 8))
+ax.axis('off')
+ax.axis('tight')
+table = ax.table(
+    cellText=average_transaction.values, 
+    colLabels=average_transaction.columns, 
+    cellLoc='center',
+    bbox=[0.05, 0.1, 0.9, 0.8]
+)
+logo_ax = fig.add_axes([0.8, 0.85, 0.15, 0.15], anchor='NE', zorder=1)
+logo_ax.imshow(logo_img)
+logo_ax.axis('off') 
+
+for (i, j), cell in table.get_celld().items():
+    if i == 0:  
+        cell.set_text_props(weight='bold', color='white',font=manjari_bold)
+        cell.set_facecolor("#3B3365") 
+    else:
+        cell.set_text_props(weight='bold', color='black',font=manjari_bold)
+        cell.set_facecolor("#8F81DD") if i % 2 == 0 else cell.set_facecolor("#BCADFF")
+
+ax.set_title('#TITLE#', weight='bold', font_properties=manjari_bold)
+
+"""
+    ]
+    ),
+    data_entry(
+        label = "product_highest_revenue",
+        instructions=[
+            instruction('which items in store sold the most', 'Product', "Revenue ($)", "Products with Highest Revenue"),
+        ],
+        output_raw = [
+"""total_revenue = df.groupby('#DETAIL#')['#TOTAL#'].sum().reset_index()
+total_revenue = total_revenue.sort_values(by='#TOTAL#',ascending=False)
+total_revenue = total_revenue.iloc[:5]
+total_revenue['#TOTAL#'] = total_revenue['#TOTAL#'].apply(lambda x: f'${x:,.2f}')
+total_revenue.columns=['#XAXIS#','#YAXIS#']
+
+fig, ax = plt.subplots(figsize=(10, 8))
+ax.axis('off')
+ax.axis('tight')
+table = ax.table(
+    cellText=total_revenue.values, 
+    colLabels=total_revenue.columns, 
+    cellLoc='center',
+    bbox=[0.05, 0.1, 0.9, 0.8]
+)
+logo_ax = fig.add_axes([0.8, 0.85, 0.15, 0.15], anchor='NE', zorder=1)
+logo_ax.imshow(logo_img)
+logo_ax.axis('off') 
+
+for (i, j), cell in table.get_celld().items():
+    if i == 0:  
+        cell.set_text_props(weight='bold', color='white',font=manjari_bold)
+        cell.set_facecolor("#3B3365") 
+    else:
+        cell.set_text_props(weight='bold', color='black',font=manjari_bold)
+        cell.set_facecolor("#8F81DD") if i % 2 == 0 else cell.set_facecolor("#BCADFF")
+
+ax.set_title('#TITLE#', weight='bold', font_properties=manjari_bold)
+
+"""
+    ]
+    ),
+    data_entry(
+        label = "average_transaction_value_per_staff",
+        instructions=[
+            instruction('what is the average revenue per transaction per staff?', 'Staff', "AVG Revenue ($)", "Average Revenue per Transaction (Staff)"),
+        ],
+        output_raw = [
+"""transaction_total = df.groupby(['#STAFF#','#ORDER_ID#'])['#TOTAL#'].sum().reset_index()
+average_transaction = transaction_total.groupby('#STAFF#')['#TOTAL#'].mean().reset_index()
+average_transaction.columns=['#XAXIS#','#YAXIS#']
+fig, ax = plt.subplots(figsize=(10, 8))
+ax.axis('off')
+ax.axis('tight')
+table = ax.table(
+    cellText=average_transaction.values, 
+    colLabels=average_transaction.columns, 
+    cellLoc='center',
+    bbox=[0.05, 0.1, 0.9, 0.8]
+)
+logo_ax = fig.add_axes([0.8, 0.85, 0.15, 0.15], anchor='NE', zorder=1)
+logo_ax.imshow(logo_img)
+logo_ax.axis('off') 
+
+table.auto_set_font_size(False)
+table.set_fontsize(14)
+table.scale(1.2, 4)
+
+for (i, j), cell in table.get_celld().items():
+    if i == 0:  
+        cell.set_text_props(weight='bold', color='white',font=manjari_bold)
+        cell.set_facecolor("#3B3365") 
+    else:
+        cell.set_text_props(weight='bold', color='black',font=manjari_bold)
+        cell.set_facecolor("#8F81DD") if i % 2 == 0 else cell.set_facecolor("#BCADFF")
+
+ax.set_title('#TITLE#', weight='bold', font_properties=manjari_bold)
+"""
+    ]
+    ),
+    data_entry(
+        label = "album_quantity_sales",
+        instructions=[
+            instruction('count of album sales?', 'Album', "Count", "Count of Album Sales"),
+        ],
+        output_raw = [
+"""album_sales = df[df['#CATEGORY#']=='Album']
+quantity_albumns_sold = album_sales.groupby('#DETAIL#')['#QUANTITY#'].sum().reset_index()
+quantity_albumns_sold['#QUANTITY#'] = quantity_albumns_sold['#QUANTITY#'].apply(lambda x: f'${x:,.2f}')
+quantity_albumns_sold.columns=['#XAXIS#','#YAXIS#']
+
+fig, ax = plt.subplots(figsize=(10, 8))
+ax.axis('off')
+ax.axis('tight')
+table = ax.table(
+    cellText=quantity_albumns_sold.values, 
+    colLabels=quantity_albumns_sold.columns, 
+    cellLoc='center',
+    bbox=[0.05, 0.1, 0.9, 0.8]
+)
+logo_ax = fig.add_axes([0.8, 0.85, 0.15, 0.15], anchor='NE', zorder=1)
+logo_ax.imshow(logo_img)
+logo_ax.axis('off') 
+
+for (i, j), cell in table.get_celld().items():
+    if i == 0:  
+        cell.set_text_props(weight='bold', color='white',font=manjari_bold)
+        cell.set_facecolor("#3B3365") 
+    else:
+        cell.set_text_props(weight='bold', color='black',font=manjari_bold)
+        cell.set_facecolor("#8F81DD") if i % 2 == 0 else cell.set_facecolor("#BCADFF")
+
+ax.set_title('#TITLE#', weight='bold', font_properties=manjari_bold)
+
+"""
+    ]
+    ),
+    data_entry(
+        label = "top_5_albums_sold",
+        instructions=[
+            instruction('top 5 albums sold', 'Album', "Sales ($)", "Top 5 Albums in Sales"),
+        ],
+        output_raw = [
+"""album_sales = df[df['#CATEGORY#']=='Album']
+total_album_revenue = album_sales.groupby('#DETAIL#')['#TOTAL#'].sum().reset_index()
+total_album_revenue = total_album_revenue.sort_values(by='#TOTAL#',ascending=False)
+total_album_revenue = total_album_revenue.iloc[:5]
+total_album_revenue['#TOTAL#'] = total_album_revenue['#TOTAL#'].apply(lambda x: f'${x:,.2f}')
+total_album_revenue.columns=['#XAXIS#','#YAXIS#']
+
+fig, ax = plt.subplots(figsize=(10, 8))
+ax.axis('off')
+ax.axis('tight')
+table = ax.table(
+    cellText=total_album_revenue.values, 
+    colLabels=total_album_revenue.columns, 
+    cellLoc='center',
+    bbox=[0.05, 0.1, 0.9, 0.8]
+)
+logo_ax = fig.add_axes([0.8, 0.85, 0.15, 0.15], anchor='NE', zorder=1)
+logo_ax.imshow(logo_img)
+logo_ax.axis('off') 
+
+for (i, j), cell in table.get_celld().items():
+    if i == 0:  
+        cell.set_text_props(weight='bold', color='white',font=manjari_bold)
+        cell.set_facecolor("#3B3365") 
+    else:
+        cell.set_text_props(weight='bold', color='black',font=manjari_bold)
+        cell.set_facecolor("#8F81DD") if i % 2 == 0 else cell.set_facecolor("#BCADFF")
+
+ax.set_title('#TITLE#', weight='bold', font_properties=manjari_bold)
+
+"""
+    ]
+    ),
+    data_entry(
+        label = "bottom_5_albums",
+        instructions=[
+            instruction('bottom 5 albums in Revenue as a table', 'Album', "Revenue ($)", "Bottom 5 Albums in Revenue"),
+        ],
+        output_raw = [
+"""album_sales = df[df['#CATEGORY#']=='Album']
+total_album_revenue = album_sales.groupby('#DETAIL#')['#TOTAL#'].sum().reset_index()
+total_album_revenue = total_album_revenue.sort_values(by='#TOTAL#',ascending=True)
+total_album_revenue = total_album_revenue.iloc[:5]
+total_album_revenue['#TOTAL#'] = total_album_revenue['#TOTAL#'].apply(lambda x: f'${x:,.2f}')
+total_album_revenue.columns=['#XAXIS#','#YAXIS#']
+
+fig, ax = plt.subplots(figsize=(10, 8))
+fig.subplots_adjust(left=0.1, right=0.9, top=0.9, bottom=0.1)
+ax.axis('off')
+ax.axis('tight')
+table = ax.table(
+    cellText=total_album_revenue.values, 
+    colLabels=total_album_revenue.columns, 
+    cellLoc='center',
+    bbox=[0.05, 0.1, 0.9, 0.8]
+)
+logo_ax = fig.add_axes([0.8, 0.85, 0.15, 0.15], anchor='NE', zorder=1)
+logo_ax.imshow(logo_img)
+logo_ax.axis('off') 
+
+for (i, j), cell in table.get_celld().items():
+    if i == 0:  
+        cell.set_text_props(weight='bold', color='white',font=manjari_bold)
+        cell.set_facecolor("#3B3365") 
+    else:
+        cell.set_text_props(weight='bold', color='black',font=manjari_bold)
+        cell.set_facecolor("#8F81DD") if i % 2 == 0 else cell.set_facecolor("#BCADFF")
+
+ax.set_title('#TITLE#', weight='bold', font_properties=manjari_bold)
+
+"""
+    ]
     )
     
 

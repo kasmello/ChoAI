@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import matplotlib.font_manager as fm
 import matplotlib.image as mpimg
+import numpy as np
 from tqdm import tqdm
 
 manjari_bold_path = 'font/Manjari-Bold.ttf'
@@ -415,8 +416,10 @@ def test(dict_list):
 
     for i in tqdm(range(len(dict_list))):
         entry = dict_list[i]
-
         df = all_dfs[entry['input']]
+        full_error=''
+        short_error=''
+
         try:
             with warnings.catch_warnings(record=True) as caught_warnings:
                 warnings.simplefilter("always")

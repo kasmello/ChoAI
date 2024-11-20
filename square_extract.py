@@ -1,5 +1,6 @@
 import os
 import pandas as pd
+import re
 from dotenv import load_dotenv
 from datetime import datetime, timezone, timedelta
 from square.client import Client
@@ -41,10 +42,12 @@ def get_artist(album_name):
         return None
     if 'STRAY KIDS' in album_name.upper():
         return 'Stray Kids'
-    elif 'TWICE' in album_name.upper():
-        return 'Twice'
     elif 'NCT' in album_name.upper():
         return 'NCT Dream'
+    elif 'I‚ÄôVE' in album_name.upper():
+        return 'IVE'
+    elif 'MONSTA X' in album_name.upper():
+        return 'Monsta X'
     elif 'SEVENTEEN' in album_name.upper():
         return 'Seventeen'
     elif 'JIMIN' in album_name.upper():
@@ -53,37 +56,50 @@ def get_artist(album_name):
         return 'BTS JungKook'
     elif '(G)I-DLE' in album_name.upper():
         return '(G)I-DLE'
-    elif 'BTS V' in album_name.upper():
+    elif 'BTS V ' in album_name.upper():
         return 'BTS V'
     elif 'EXO' in album_name.upper():
         return 'EXO'
     elif 'ATEEZ' in album_name.upper():
-        return 'ATEEZ'
+        return 'Ateez'
     elif 'AESPA' in album_name.upper():
-        return 'AESPA'
+        return 'aespa'
     elif 'ENHYPEN' in album_name.upper():
-        return 'ENHYPEN'
+        return 'Enhypen'
     elif 'ITZY' in album_name.upper():
         return 'ITZY'
-    elif 'ENHYPEN' in album_name.upper():
-        return 'ENHYPEN'
     elif 'NAYEON' in album_name.upper():
-        return 'NAYEON'
+        return 'Nayeon'
+    elif 'TWICE' in album_name.upper():
+        return 'Twice'
     elif 'NEWJEANS' in album_name.upper():
         return 'New Jeans'
-    elif 'LE SSERAFIM' in album_name.upper():
+    elif 'LE SSERAFIM' in album_name.upper() or 'LESSERAFIM' in album_name.upper():
         return 'Le Sserafim'
     elif 'BTS' in album_name.upper():
         return 'BTS'
     elif 'IU' in album_name:
         return 'IU'
-    elif 'ZEROBASEONE' in album_name:
+    elif 'ZEROBASEONE' in album_name.upper():
         return 'ZEROBASEONE'
-    elif 'ZEROBATomorrow X TogetherSEONE' in album_name.upper() or 'TXT' in album_name:
+    elif 'Tomorrow X Together' in album_name.upper() or 'TXT' in album_name:
         return 'Tomorrow X Together'
     else:
         return None
 
+def strip_name(name): #get rid of variation name
+    if not isinstance(name,str):
+        return name
+    
+    start_index = name.rfind('(')
+    end_index = name.rfind(')')
+    result = name
+    # If both parentheses are found, strip the substring
+    if start_index != -1 and end_index != -1 and start_index < end_index:
+        result = name[:start_index] + name[end_index + 1:]
+    
+    # If not found, return the original string
+    return result.strip().replace('I‚ÄôVE','IVE')
 
 def fetch_order(order_id):
     try:
@@ -132,7 +148,7 @@ def get_all_payments(location_id):
 
 # Retrieve all payments
 
-def main(output='ProcessedData/square_payments.csv'):
+def main():
     payments = get_all_payments(location_id)
     payments_df = pd.DataFrame(payments)
     payments_df = payments_df[['id','created_at','order_id']]
@@ -149,10 +165,11 @@ def main(output='ProcessedData/square_payments.csv'):
     orders_df['total']=orders_df['total_money'].apply(lambda x: x['amount']/100)
     orders_df['type']=orders_df['name'].apply(get_artist)
     orders_df['category'] = orders_df['type'].apply(lambda x: 'Miscellaneous' if not x else 'Album')
+    orders_df['name'] = orders_df['name'].apply(strip_name)
     orders_df = orders_df[['order_id','name','variation_name','quantity','base','total','type','category']]
     # payments_df['amount_money']=payments_df['amount_money'].apply(lambda x: x['amount']/100)
     all_orders_df = pd.merge(payments_df,orders_df,on='order_id',how='left')
     all_orders_df.to_csv('ProcessedData/square_payments.csv',index=False)
 
 if __name__ == '__main__':
-    main(False)
+    main()
