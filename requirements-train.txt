@@ -1,0 +1,38 @@
+# ── Training Dependencies (Google Colab / GPU machine) ───────────────────────
+# These packages are used inside Training_Notebook.ipynb and
+# Inference_Notebook.ipynb on a GPU runtime.
+#
+# !! DO NOT run `pip install -r requirements-train.txt` directly on Colab !!
+# Unsloth must be installed first with its own command (see below), otherwise
+# xformers and bitsandbytes will pick the wrong CUDA build.
+#
+# The install cell at the top of each notebook handles this correctly:
+#
+#   pip install "unsloth[colab-new] @ git+https://github.com/unslothai/unsloth.git"
+#   pip install --no-deps {xformers} trl peft accelerate bitsandbytes triton
+#
+# This file is here for documentation and for non-Colab GPU setups (e.g. RunPod).
+
+# ── Core ML ───────────────────────────────────────────────────────────────────
+torch>=2.3
+transformers>=4.46
+peft>=0.13             # LoRA / QLoRA adapter support
+trl>=0.12              # SFTTrainer for supervised fine-tuning
+accelerate>=0.34       # multi-GPU / mixed-precision training utils
+bitsandbytes>=0.44     # 4-bit / 8-bit quantisation
+
+# ── Dataset handling ──────────────────────────────────────────────────────────
+datasets>=3.0          # HuggingFace Dataset used to build train/val/test splits
+
+# ── Experiment tracking & model registry ─────────────────────────────────────
+wandb>=0.18            # logs loss curves, eval metrics, and inference tables
+huggingface_hub>=0.25  # push/pull LoRA adapters to/from HF Hub
+
+# ── Evaluation ────────────────────────────────────────────────────────────────
+codebleu>=0.6          # code-aware BLEU metric for generated matplotlib code
+sentence-transformers>=3.0  # semantic similarity scoring for chart titles
+Pillow>=10.0           # image handling for chart output validation
+
+# ── Unsloth (document the special install, not pip-installable normally) ──────
+# unsloth  ← installed via: pip install "unsloth[colab-new] @ git+https://..."
+# xformers ← installed via: pip install --no-deps xformers ...

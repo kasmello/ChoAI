@@ -1,0 +1,38 @@
+# ── Local Development Dependencies ───────────────────────────────────────────
+# Used for running the data pipeline locally (new_data.py, square_extract.py,
+# generate_common_file_from_data.py) and iterating on training data generation.
+#
+# Install with:  pip install -r requirements.txt
+#
+# NOTE: Training (unsloth, torch, peft, trl…) lives in requirements-train.txt
+#       because Unsloth requires a special install order on Colab/GPU machines.
+
+# ── Data processing ───────────────────────────────────────────────────────────
+pandas>=2.0
+numpy>=1.26
+
+# ── Visualisation (used both in pipeline and by generated graph code) ─────────
+matplotlib>=3.8
+seaborn>=0.13
+
+# ── Code formatting ───────────────────────────────────────────────────────────
+# new_data.py runs Black over generated matplotlib code to normalise style
+# before it goes into the training set.
+black>=24.0
+
+# ── Square POS integration ────────────────────────────────────────────────────
+# square>=37.0          # Square SDK — fetches real sales data via square_extract.py
+python-dotenv>=1.0    # loads SQUARE_ACCESS_TOKEN and SQUARE_LOCATION_ID from .env
+
+# ── Utilities ─────────────────────────────────────────────────────────────────
+tqdm>=4.66            # progress bars during dataset generation
+nltk>=3.8             # BLEU score helpers used in evaluation
+requests>=2.31        # used in square_api_testing.py
+
+# ── Notebook / local exploration ──────────────────────────────────────────────
+jupyterlab>=4.0
+ipykernel>=6.0
+# ── Notebook / local exploration ──────────────────────────────────────────────
+fastapi[standard]
+gradio
+modal
