@@ -32,7 +32,3 @@ requests>=2.31        # used in square_api_testing.py
 # ── Notebook / local exploration ──────────────────────────────────────────────
 jupyterlab>=4.0
 ipykernel>=6.0
-# ── Notebook / local exploration ──────────────────────────────────────────────
-fastapi[standard]
-gradio
-modal

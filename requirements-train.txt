@@ -14,19 +14,17 @@
 # This file is here for documentation and for non-Colab GPU setups (e.g. RunPod).
 
 # ── Core ML ───────────────────────────────────────────────────────────────────
-torch>=2.3
+torch>=2.8.0
 transformers>=4.46
 peft>=0.13             # LoRA / QLoRA adapter support
 trl>=0.12              # SFTTrainer for supervised fine-tuning
 accelerate>=0.34       # multi-GPU / mixed-precision training utils
 bitsandbytes>=0.44     # 4-bit / 8-bit quantisation
+matplotlib
 
-# ── Dataset handling ──────────────────────────────────────────────────────────
-datasets>=3.0          # HuggingFace Dataset used to build train/val/test splits
 
 # ── Experiment tracking & model registry ─────────────────────────────────────
 wandb>=0.18            # logs loss curves, eval metrics, and inference tables
-huggingface_hub>=0.25  # push/pull LoRA adapters to/from HF Hub
 
 # ── Evaluation ────────────────────────────────────────────────────────────────
 codebleu>=0.6          # code-aware BLEU metric for generated matplotlib code
@@ -35,4 +33,5 @@ Pillow>=10.0           # image handling for chart output validation
 
 # ── Unsloth (document the special install, not pip-installable normally) ──────
 # unsloth  ← installed via: pip install "unsloth[colab-new] @ git+https://..."
+# unsloth-zoo 
 # xformers ← installed via: pip install --no-deps xformers ...
