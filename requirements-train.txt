@@ -1,37 +1,35 @@
-# ── Training Dependencies (Google Colab / GPU machine) ───────────────────────
-# These packages are used inside Training_Notebook.ipynb and
-# Inference_Notebook.ipynb on a GPU runtime.
+# ── Training Dependencies (Google Colab) ─────────────────────────────────────
+# Used inside Training_Notebook.ipynb and Inference_Notebook.ipynb.
 #
-# !! DO NOT run `pip install -r requirements-train.txt` directly on Colab !!
-# Unsloth must be installed first with its own command (see below), otherwise
-# xformers and bitsandbytes will pick the wrong CUDA build.
+# !! Do NOT pip install this file directly !!
+# The install cell at the top of each notebook handles the correct install
+# order — Unsloth must be installed first as it patches torch internals.
 #
-# The install cell at the top of each notebook handles this correctly:
-#
-#   pip install "unsloth[colab-new] @ git+https://github.com/unslothai/unsloth.git"
-#   pip install --no-deps {xformers} trl peft accelerate bitsandbytes triton
-#
-# This file is here for documentation and for non-Colab GPU setups (e.g. RunPod).
+# This file documents versions for reference and for non-Colab GPU setups.
+# Versions sourced from unsloth's pyproject.toml (checked April 2026).
+
+# ── Unsloth ───────────────────────────────────────────────────────────────────
+# Installed via:  pip install unsloth
+# Torch is a dependency of unsloth and will be installed automatically
+# at the correct version for your CUDA environment.
 
 # ── Core ML ───────────────────────────────────────────────────────────────────
-torch>=2.8.0
-transformers>=4.46
-peft>=0.13             # LoRA / QLoRA adapter support
-trl>=0.12              # SFTTrainer for supervised fine-tuning
-accelerate>=0.34       # multi-GPU / mixed-precision training utils
-bitsandbytes>=0.44     # 4-bit / 8-bit quantisation
-matplotlib
+transformers>=4.51.3,<=5.5.0   # excludes several broken releases (see unsloth pyproject.toml)
+trl>=0.18.2,<=0.24.0           # SFTTrainer for supervised fine-tuning
+peft>=0.18.0                   # LoRA / QLoRA adapter support
+accelerate>=0.34.1             # mixed-precision training utils
+bitsandbytes>=0.45.5           # 4-bit / 8-bit quantisation (excludes 0.46.0 and 0.48.0)
 
+# ── Dataset handling ──────────────────────────────────────────────────────────
+datasets>=3.0
 
-# ── Experiment tracking & model registry ─────────────────────────────────────
-wandb>=0.18            # logs loss curves, eval metrics, and inference tables
+# ── Experiment tracking ───────────────────────────────────────────────────────
+wandb>=0.18
 
 # ── Evaluation ────────────────────────────────────────────────────────────────
-codebleu>=0.6          # code-aware BLEU metric for generated matplotlib code
-sentence-transformers>=3.0  # semantic similarity scoring for chart titles
-Pillow>=10.0           # image handling for chart output validation
+codebleu>=0.6
+sentence-transformers>=3.0
+Pillow>=10.0
 
-# ── Unsloth (document the special install, not pip-installable normally) ──────
-# unsloth  ← installed via: pip install "unsloth[colab-new] @ git+https://..."
-# unsloth-zoo 
-# xformers ← installed via: pip install --no-deps xformers ...
+# ── Visualisation (used in generated chart code) ──────────────────────────────
+matplotlib
